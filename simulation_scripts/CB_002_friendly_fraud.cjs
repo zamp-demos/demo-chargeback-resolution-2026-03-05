@@ -367,7 +367,16 @@ const waitForSignal = async (signalId) => {
                 "Awaiting analyst confirmation to proceed..."
             ],
             isHitl: true,
-            hitlSignal: "APPROVE_EVIDENCE_CB002"
+            hitlSignal: "APPROVE_EVIDENCE_CB002",
+            artifacts: [{
+                id: "analyst-decision-cb002",
+                type: "decision",
+                label: "Analyst Decision Required",
+                options: [
+                    { label: "Approve — File representment with fraud escalation", signal: "APPROVE_EVIDENCE_CB002" },
+                    { label: "Override — File representment only, no fraud escalation", signal: "APPROVE_EVIDENCE_CB002" }
+                ]
+            }]
         }
     ];
 
