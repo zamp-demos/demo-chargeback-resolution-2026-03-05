@@ -73,22 +73,26 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
     const steps = [
         {
             id: "step-1",
-            title_p: "Pega Smart Dispute — Ingesting case CHB-2026-0147...",
-            title_s: "Pega Smart Dispute — Case Intake Received",
+            title_p: "Pega Smart Dispute — Triaging case CHB-2026-0147...",
+            title_s: "Pega Smart Dispute — Case Triaged, Routed to Pace",
             reasoning: [
-                "Webhook received from Visa VROL — new chargeback filed",
-                "Case ID: CHB-2026-0147",
-                "Reason Code: Visa 13.1 — Merchandise / Services Not Received",
-                "Dispute amount: $2,847.00",
-                "Cardholder: James R. Patterson (card ending 8421)",
-                "Merchant: NovaTech Electronics (MCC 5732 — Electronics Stores)",
-                "Transaction date: February 18, 2026",
-                "Pega case created — routing to Pace intelligence layer"
+                "Visa VROL webhook received — new chargeback filed under RC 13.1",
+                "Pega case CHB-2026-0147 created — running intake decisioning rules:",
+                "  Validated cardholder: James R. Patterson (card ending 8421)",
+                "  Merchant: NovaTech Electronics (MCC 5732 — Electronics Stores)",
+                "  Transaction date: February 18, 2026 — dispute amount: $2,847.00",
+                "  Core banking pull: Original authorization confirmed, no reversal on file",
+                "  SLA assignment: 15-day Visa representment window, deadline March 12",
+                "  Auto-rule check: No duplicate case, no prior dispute on this transaction",
+                "Pega routing decision — handing to Pace intelligence layer:",
+                "  RC 13.1 requires delivery proof evaluation and CE 3.0 evidence assembly",
+                "  These are judgment-intensive tasks outside Pega’s decisioning rules",
+                "  Pace to gather evidence, score fraud risk, and build representment package"
             ],
             artifacts: [{
                 id: "case-intake",
                 type: "json",
-                label: "Pega Case Details",
+                label: "Pega Case Handoff",
                 data: {
                     case_id: "CHB-2026-0147",
                     reason_code: "Visa 13.1",
@@ -96,7 +100,9 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
                     cardholder: "James R. Patterson",
                     merchant: "NovaTech Electronics",
                     mcc: "5732",
-                    transaction_date: "2026-02-18"
+                    transaction_date: "2026-02-18",
+                    pega_triage: "Intake validated, SLA set, no duplicates",
+                    handoff_reason: "RC 13.1 requires evidence evaluation beyond rule engine"
                 }
             }]
         },
@@ -110,7 +116,6 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
                 "  Signed by: J. PATTERSON",
                 "  GPS delivery confidence: 99.2% match to billing address",
                 "  Photo-on-delivery: Front porch, package visible",
-                "",
                 "Salesforce CRM — Customer 360 lookup:",
                 "  4 prior orders with NovaTech (avg $1,200)",
                 "  Zero previous disputes across all merchants",
@@ -184,7 +189,6 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
                 "  4 prior clean orders with merchant: -20 points",
                 "  Zero dispute history across all cards: -15 points",
                 "  CE 3.0 Rule 13.1.4 satisfied: -12 points",
-                "",
                 "Final Score: 8/100 (Low Risk)",
                 "Evidence Strength: 92/100 (Excellent)",
                 "Recommendation: REPRESENT — high confidence win"
