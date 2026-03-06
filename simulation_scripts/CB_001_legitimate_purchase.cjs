@@ -288,16 +288,39 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
         },
         {
             id: "step-8",
-            title_p: "UiPath — Posting to SAP General Ledger and closing case...",
-            title_s: "UiPath — Ledger Update + Merchant Notification + Case Closed",
+            title_p: "UiPath — Posting to SAP General Ledger...",
+            title_s: "UiPath — SAP GL Posting Complete (JE-2026-CHB-0147)",
             reasoning: [
-                "UiPath RPA bot execution:",
-                "  SAP GL posting: Chargeback reserve $2,847.00 reversed",
+                "UiPath RPA bot executed SAP ledger posting:",
+                "  Chargeback reserve $2,847.00 reversed",
                 "  Journal entry: JE-2026-CHB-0147 posted to GL account 2340",
-                "  Merchant notification: NovaTech Electronics notified via email",
+                "  Accounting period: March 2026",
+                "  Approval: Auto-approved (amount below $5,000 threshold)"
+            ]
+        },
+        {
+            id: "step-9",
+            title_p: "UiPath — Sending merchant notification...",
+            title_s: "UiPath — NovaTech Electronics Notified of Resolution",
+            reasoning: [
+                "Merchant notification dispatched:",
+                "  Recipient: NovaTech Electronics (merchant ID: NTE-44821)",
+                "  Channel: Automated email via Pega correspondence",
+                "  Content: Dispute resolved in merchant’s favor, funds retained",
+                "  Transaction reference: TXN-2026-02-14-NTE-2847",
+                "  Merchant portal updated with resolution details"
+            ]
+        },
+        {
+            id: "step-10",
+            title_p: "Pega Smart Dispute — Closing case...",
+            title_s: "Pega Smart Dispute — Case Closed (Won — Representment Accepted)",
+            reasoning: [
+                "Case closure finalized:",
                 "  Pega case status: RESOLVED — Won (Representment Accepted)",
                 "  Total resolution time: 4 hours 12 minutes",
-                "  Zero human analyst intervention required"
+                "  Zero human analyst intervention required",
+                "  Outcome: Chargeback successfully defended, $2,847.00 retained"
             ]
         }
     ];
