@@ -334,7 +334,16 @@ const waitForSignal = async (signalId) => {
                 "Awaiting analyst decision..."
             ],
             isHitl: true,
-            hitlSignal: "APPROVE_PARTIAL_REFUND_CB003"
+            hitlSignal: "APPROVE_PARTIAL_REFUND_CB003",
+            artifacts: [{
+                id: "analyst-decision-cb003",
+                type: "decision",
+                label: "Analyst Decision Required",
+                options: [
+                    { label: "Accept liability — Write off $1,180 (save $500 filing fee)", signal: "APPROVE_PARTIAL_REFUND_CB003" },
+                    { label: "Override — Proceed to Visa arbitration ($500 fee)", signal: "APPROVE_PARTIAL_REFUND_CB003" }
+                ]
+            }]
         }
     ];
 
