@@ -132,55 +132,74 @@ const waitForEmailSent = async () => {
     const steps = [
         {
             id: "step-1",
-            title_p: "Pega Smart Dispute — Representment received, routing to Pace...",
-            title_s: "Pega Smart Dispute — Representment Routed to Pace",
+            title_p: "Pega Smart Dispute — Ingesting case CHB-2026-0731...",
+            title_s: "Pega Smart Dispute — Representment Received (4 Merchant Documents)",
             reasoning: [
-                "Pega STP processed the initial chargeback for case CHB-2026-0731 automatically",
-                "under Visa Reason Code 13.1 (Merchandise/Services Not Received).",
-                "Provisional credit of $4,200.00 was issued to cardholder on 2026-02-18.",
+                "Webhook received from Visa VROL — merchant representment filed",
+                "Case ID: CHB-2026-0731",
+                "Reason Code: Visa 13.1 — Merchandise / Services Not Received",
+                "Dispute amount: $4,200.00",
+                "Cardholder: Katherine E. Whitfield (card ending 4892)",
+                "Merchant: Grand Meridian Hotel & Suites (MCC 7011 — Lodging / Hotels)",
+                "Transaction date: February 8, 2026",
+                "Cardholder claim: 'Hotel stay was never rendered — booking was cancelled'",
                 "",
-                "The merchant, Grand Meridian Hotel & Suites, has now submitted a representment",
-                "packet containing 4 documents. Pega's deterministic rules cannot parse unstructured",
-                "merchant evidence — routing to Pace for intelligent document analysis."
+                "Provisional credit of $4,200.00 issued to cardholder on 2026-02-18",
+                "Merchant submitted representment packet: 4 documents attached",
+                "Pega STP cannot parse unstructured merchant evidence — routing to Pace intelligence layer"
             ],
             artifacts: [{
                 id: "case-intake-cb005",
                 type: "json",
-                label: "Case Details — CHB-2026-0731",
+                label: "Pega Case Details",
                 data: {
-                    caseId: "CHB-2026-0731",
-                    processId: "CHB_005",
-                    cardholderName: "Katherine E. Whitfield",
-                    cardNumber: "****-****-****-4892",
-                    merchantName: "Grand Meridian Hotel & Suites",
-                    merchantCategory: "MCC 7011 — Lodging / Hotels",
-                    transactionDate: "2026-02-08",
-                    disputeAmount: "$4,200.00",
-                    reasonCode: "Visa 13.1 — Merchandise/Services Not Received",
-                    cardholderClaim: "Hotel stay was never rendered — booking was cancelled",
-                    chargebackFiledDate: "2026-02-15",
-                    provisionalCreditDate: "2026-02-18",
-                    representmentReceivedDate: "2026-03-01",
-                    merchantDocumentsSubmitted: 4,
-                    pegaDecision: "STP limit reached — unstructured evidence requires intelligent analysis",
-                    routedTo: "Pace Intelligence Layer"
+                    case_id: "CHB-2026-0731",
+                    reason_code: "Visa 13.1",
+                    amount: "$4,200.00",
+                    cardholder: "Katherine E. Whitfield",
+                    merchant: "Grand Meridian Hotel & Suites",
+                    mcc: "7011",
+                    transaction_date: "2026-02-08",
+                    cardholder_claim: "Hotel stay never rendered — booking was cancelled",
+                    representment_documents: 4,
+                    routing: "Pace Intelligence Layer"
                 }
             }]
         },
         {
             id: "step-2",
-            title_p: "Pace — Extracting evidence from 4 merchant documents...",
-            title_s: "Pace — Intelligent Document Extraction (23 Facts from 4 Documents)",
+            title_p: "Extracting evidence from merchant representment packet (4 documents)...",
+            title_s: "Document Extraction — 23 Facts Extracted from 4 Merchant Documents",
             reasoning: [
-                "Pace ingested the merchant's representment packet — 4 documents in mixed formats.",
-                "Each document was parsed, OCR'd where necessary, and key facts extracted.",
+                "Merchant representment packet — 4 documents processed:",
+                "  Document 1: Hotel check-in scan (image)",
+                "    Guest: Katherine E. Whitfield",
+                "    Check-in: February 10, 2026 at 14:32 EST",
+                "    Room: Suite 1204",
+                "    Signature: PRESENT — verified against card-on-file name",
+                "    ID verification: Driver license ending *8834 — matched",
                 "",
-                "Document 1: Hotel check-in scan (image) — physical registration card with signature",
-                "Document 2: Email correspondence thread (PDF) — 6 messages between cardholder and hotel",
-                "Document 3: Hotel cancellation & modification policy (PDF) — terms and conditions",
-                "Document 4: Hotel folio / itemized invoice (PDF) — charges over 3-night stay",
+                "  Document 2: Email correspondence thread (PDF, 6 messages)",
+                "    Original booking: Feb 5–8, 2026",
+                "    Date change requested: Feb 3 by cardholder",
+                "    New dates: Feb 10–13, 2026",
+                "    Cardholder's exact words: 'I need to move my dates to Feb 10-13 instead'",
+                "    Hotel confirmed: GM-2026-88412-REV",
+                "    Cancellation mentioned: NO",
                 "",
-                "Pace extracted 23 discrete facts across all 4 documents in 4.2 seconds."
+                "  Document 3: Hotel cancellation & modification policy (PDF)",
+                "    Free cancellation: 72 hours before check-in",
+                "    Modification clause: Section 4.2(b) — revised bookings are non-refundable",
+                "",
+                "  Document 4: Hotel folio / itemized invoice (PDF)",
+                "    Folio: FO-2026-1204-WH",
+                "    Room: $3,600.00 (3 nights × $1,200/night)",
+                "    Minibar: $187.50 (Feb 10, 11, 12)",
+                "    Room service: $312.50 (Feb 11 dinner, Feb 12 breakfast)",
+                "    Spa: $100.00 (Feb 11)",
+                "    Total: $4,200.00",
+                "",
+                "23 discrete facts extracted across all 4 documents in 4.2 seconds"
             ],
             artifacts: [
                 {
@@ -257,32 +276,39 @@ const waitForEmailSent = async () => {
         },
         {
             id: "step-3",
-            title_p: "Pace — Cross-referencing evidence across all 4 documents...",
-            title_s: "Pace — Cross-Reference Analysis (5/5 Tests Fail Cardholder Claim)",
+            title_p: "Cross-referencing extracted facts against cardholder claim...",
+            title_s: "Evidence Cross-Reference — All 5 Tests Contradict Cardholder Claim",
             reasoning: [
-                "Pace cross-referenced the 23 extracted facts across all 4 documents",
-                "and against Meridian Bank's internal records.",
+                "Cross-reference analysis — cardholder claim vs documentary evidence:",
                 "",
-                "The cardholder claims the hotel stay was 'never rendered' and the booking was cancelled.",
-                "Pace tested this claim against the documentary evidence:",
+                "  Test 1: Was the booking cancelled?",
+                "    Finding: NO",
+                "    Email thread message #2 (Feb 3 at 09:14): 'I need to move my dates to Feb 10-13 instead'",
+                "    This is a modification request, not a cancellation",
                 "",
-                "Test 1 — Was the booking cancelled? NO",
-                "  Email thread shows date CHANGE request, not cancellation.",
-                "  Cardholder's exact words: 'I need to move my dates to Feb 10-13 instead.'",
+                "  Test 2: Did the cardholder check in?",
+                "    Finding: YES",
+                "    Registration card signed by Katherine E. Whitfield on Feb 10 at 14:32 EST",
+                "    Driver license ending *8834 verified — Suite 1204 assigned",
                 "",
-                "Test 2 — Did the cardholder check in? YES",
-                "  Physical registration card signed Feb 10 at 14:32 EST. ID verified.",
+                "  Test 3: Did the cardholder physically stay at the hotel?",
+                "    Finding: YES",
+                "    Minibar charges: Feb 10, 11, 12",
+                "    Room service: Feb 11 dinner, Feb 12 breakfast",
+                "    Spa services: Feb 11",
+                "    These charges require physical room key access",
                 "",
-                "Test 3 — Did the cardholder physically stay? YES",
-                "  Minibar, room service, spa charges across 3 days require physical presence.",
+                "  Test 4: Is the revised booking refundable?",
+                "    Finding: NO",
+                "    Section 4.2(b): date modifications create a new non-refundable booking",
+                "    Confirmation GM-2026-88412-REV is binding",
                 "",
-                "Test 4 — Is the revised booking refundable? NO",
-                "  Section 4.2(b): date modifications create a new non-refundable booking.",
+                "  Test 5: Does the charge amount match the dispute?",
+                "    Finding: YES",
+                "    Folio total $4,200.00 matches disputed amount exactly",
+                "    Breakdown: $3,600 room + $187.50 minibar + $312.50 room service + $100 spa",
                 "",
-                "Test 5 — Does the charge amount match? YES",
-                "  Folio total $4,200.00 matches disputed amount exactly.",
-                "",
-                "All 5 tests fail the cardholder's claim."
+                "All 5 tests fail the cardholder's claim — evidence is internally consistent"
             ],
             artifacts: [{
                 id: "cross-ref-matrix",
@@ -294,97 +320,100 @@ const waitForEmailSent = async () => {
                         {
                             test: "Was the booking cancelled?",
                             finding: "NO",
-                            evidence: "Email thread shows cardholder requested DATE CHANGE on Feb 3, not cancellation. Exact words: 'I need to move my dates to Feb 10-13 instead.'",
+                            evidence: "Email thread shows DATE CHANGE request, not cancellation. Exact words: 'I need to move my dates to Feb 10-13 instead.'",
                             sources: ["Document 2 — Email Thread (message #2, Feb 3 at 09:14)"]
                         },
                         {
                             test: "Did the cardholder check in?",
                             finding: "YES",
-                            evidence: "Physical registration card signed by Katherine E. Whitfield on Feb 10 at 14:32 EST. Driver license ID verified. Room 1204 assigned.",
+                            evidence: "Physical registration card signed Feb 10 at 14:32 EST. Driver license verified. Suite 1204.",
                             sources: ["Document 1 — Check-In Scan"]
                         },
                         {
-                            test: "Did the cardholder physically stay at the hotel?",
+                            test: "Did the cardholder physically stay?",
                             finding: "YES",
-                            evidence: "Folio shows minibar charges on Feb 10, 11, 12; room service on Feb 11 and 12; spa service on Feb 11. These charges require physical presence.",
+                            evidence: "Minibar, room service, spa charges across 3 days require physical room key access.",
                             sources: ["Document 4 — Hotel Folio"]
                         },
                         {
                             test: "Is the revised booking refundable?",
                             finding: "NO",
-                            evidence: "Hotel policy Section 4.2(b): date modifications create a new non-refundable booking. Confirmation GM-2026-88412-REV is binding.",
+                            evidence: "Section 4.2(b): date modifications create non-refundable booking. Confirmation GM-2026-88412-REV is binding.",
                             sources: ["Document 3 — Cancellation Policy", "Document 2 — Email Thread"]
                         },
                         {
                             test: "Does the charge amount match?",
                             finding: "YES",
-                            evidence: "Folio total $4,200.00 matches disputed amount exactly. Breakdown: $3,600 room + $600 incidentals.",
-                            sources: ["Document 4 — Hotel Folio", "Case Details"]
+                            evidence: "Folio total $4,200.00 matches disputed amount. Breakdown: $3,600 room + $600 incidentals.",
+                            sources: ["Document 4 — Hotel Folio"]
                         }
                     ],
-                    contradictionsSummary: "Cardholder claims service never rendered, but 4 independent evidence sources confirm: (1) dates were changed not cancelled, (2) cardholder checked in with signature, (3) cardholder incurred in-room charges over 3 days, (4) revised booking is non-refundable. All 5 tests fail the cardholder's claim."
+                    summary: "4 independent evidence sources contradict the cardholder's claim across all 5 tests"
                 }
             }]
         },
         {
             id: "step-4",
-            title_p: "Pace — Rendering verdict based on cross-reference analysis...",
-            title_s: "Pace — Verdict: Merchant Wins (Confidence 97.2%)",
+            title_p: "Computing representment verdict with Gemini...",
+            title_s: "Representment Verdict — Merchant Wins (97.2% Confidence)",
             reasoning: [
-                "Based on cross-reference analysis of all 4 merchant documents against the",
-                "cardholder's claim, Pace has reached a determination.",
+                "Gemini representment analysis — CHB-2026-0731:",
+                "  Evidence cross-reference score: 5/5 tests contradict cardholder claim",
+                "  Deciding document: Email correspondence thread (Document 2)",
+                "    Key fact: Cardholder wrote 'move my dates' — proves modification, not cancellation",
+                "    Significance: Directly contradicts the dispute claim",
                 "",
-                "The cardholder's own email correspondence is the deciding evidence —",
-                "it proves a date change was requested, not a cancellation.",
-                "Combined with the signed check-in, in-room charges, and non-refundable policy,",
-                "the merchant's representment fully rebuts the dispute.",
+                "  Corroborating evidence:",
+                "    Check-in scan: Physical signature on Feb 10 at 14:32 — cardholder arrived",
+                "    Hotel folio: Minibar + room service + spa across 3 days — cardholder stayed",
+                "    Cancellation policy: Section 4.2(b) — revised booking is non-refundable",
                 "",
-                "Verdict: MERCHANT WINS — Representment Accepted",
-                "Confidence: 97.2%",
-                "Recommendation: Accept representment. Reverse provisional credit of $4,200.00."
+                "  Visa CE 3.0 compliance:",
+                "    Signed check-in + itemized folio + correspondence = compelling evidence",
+                "    Representment filed within 30-day window — deadline met",
+                "",
+                "  Verdict: MERCHANT WINS — Representment Accepted",
+                "  Confidence: 97.2%",
+                "  Pre-arbitration risk: LOW — evidence is overwhelming",
+                "  Recommendation: Accept representment, reverse provisional credit of $4,200.00"
             ],
             artifacts: [{
                 id: "verdict-cb005",
                 type: "json",
-                label: "Verdict — CHB-2026-0731",
+                label: "Representment Verdict",
                 data: {
                     caseId: "CHB-2026-0731",
                     verdict: "MERCHANT WINS — Representment Accepted",
                     confidence: "97.2%",
-                    reasonCode: "Visa 13.1 — Merchandise/Services Not Received",
-                    finding: "Services WERE rendered. Cardholder's claim is contradicted by their own correspondence and 3 corroborating documents.",
-                    decidingEvidence: {
-                        document: "Email Correspondence Thread (Document 2)",
-                        keyFact: "Cardholder wrote 'I need to move my dates to Feb 10-13 instead' on Feb 3 — this is a modification request, not a cancellation",
-                        significance: "Directly contradicts the cardholder's dispute claim that the booking was cancelled"
-                    },
-                    corroboratingEvidence: [
-                        "Check-in scan: Cardholder signed registration card on Feb 10 at 14:32 — physically arrived",
-                        "Hotel folio: Minibar, room service, spa charges across 3 days — physically stayed",
-                        "Cancellation policy: Section 4.2(b) makes modified bookings non-refundable — no refund owed"
+                    decidingEvidence: "Email thread — cardholder requested date change, not cancellation",
+                    corroborating: [
+                        "Check-in scan: signed registration card",
+                        "Hotel folio: in-room charges across 3 days",
+                        "Cancellation policy: Section 4.2(b) non-refundable"
                     ],
-                    recommendedAction: "Accept merchant representment. Reverse provisional credit of $4,200.00.",
-                    riskAssessment: "LOW — Evidence is overwhelming and internally consistent. Pre-arbitration unlikely."
+                    recommendedAction: "Accept representment. Reverse provisional credit of $4,200.00.",
+                    preArbitrationRisk: "LOW"
                 }
             }]
         },
         {
             id: "step-5",
-            title_p: "Awaiting analyst review of representment verdict...",
+            title_p: "Awaiting analyst approval of representment verdict...",
             title_s: "Analyst Review Required — Approve Representment Acceptance",
             reasoning: [
                 "HUMAN-IN-THE-LOOP checkpoint reached",
                 "",
-                "Pace recommends accepting the merchant's representment and reversing the",
-                "provisional credit of $4,200.00 back to the cardholder's account.",
+                "Recommendation: Accept merchant representment",
+                "  Verdict: Merchant wins — confidence 97.2%",
+                "  Action: Reverse provisional credit of $4,200.00",
+                "  Pre-arbitration risk: LOW",
                 "",
-                "The evidence strongly supports the merchant. The cardholder's own email proves",
-                "the stay was modified (not cancelled), and 3 additional documents confirm occupancy.",
+                "Evidence summary:",
+                "  Cardholder claim: Hotel stay never rendered, booking was cancelled",
+                "  Finding: Cardholder's own email proves date change, not cancellation",
+                "  Corroboration: Signed check-in + in-room charges + non-refundable policy",
                 "",
-                "Confidence: 97.2%",
-                "Pre-arbitration risk: LOW",
-                "",
-                "Please review the evidence summary and approve or override this recommendation."
+                "Awaiting analyst confirmation to proceed..."
             ],
             isHitl: true,
             hitlSignal: "APPROVE_REPRESENTMENT_CB005",
@@ -426,26 +455,27 @@ const waitForEmailSent = async () => {
             await waitForSignal(step.hitlSignal);
             await updateProcessListStatus(PROCESS_ID, "In Progress", "Analyst approved — drafting response to Visa network");
 
-            // --- Post-HITL Step 6: Email Draft to Visa ---
+            // --- Post-HITL Step 6: Email Draft ---
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
                 id: "step-6",
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                title: "Pace — Drafting representment acceptance response to Visa...",
+                title: "Drafting representment acceptance response for Pega Correspondence...",
                 status: "processing"
             });
-            await updateProcessListStatus(PROCESS_ID, "In Progress", "Drafting representment response to Visa...");
+            await updateProcessListStatus(PROCESS_ID, "In Progress", "Drafting Visa response for Pega dispatch...");
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
                 id: "step-6",
-                title: "Pace — Draft Response to Visa Network",
+                title: "Directing Pega to Send Visa Response — Representment Accepted",
                 status: "warning",
                 reasoning: [
-                    "Analyst approved the representment acceptance. Pace is now drafting the formal",
-                    "response to Visa's dispute resolution channel, citing the evidence package",
-                    "and compliance framework references.",
+                    "Representment acceptance response drafted for Pega Correspondence Engine:",
+                    "  Endpoint: POST /prweb/api/v1/cases/CHB-2026-0731/correspondence",
+                    "  Template: VISA-REP-ACCEPT-001",
+                    "  Recipient: Visa Dispute Resolution (via VROL)",
                     "",
-                    "Review the draft and click Send to dispatch via Pega Correspondence Engine."
+                    "Response payload prepared — review and send to dispatch via Pega"
                 ],
                 artifacts: [{
                     id: "visa-response-email",
@@ -459,42 +489,43 @@ const waitForEmailSent = async () => {
                     }
                 }]
             });
-            await updateProcessListStatus(PROCESS_ID, "Needs Attention", "Review Visa response before dispatching");
+            await updateProcessListStatus(PROCESS_ID, "Needs Attention", "Review Visa response before dispatching via Pega");
 
             // Wait for the email Send button to be clicked
             await waitForEmailSent();
-            await updateProcessListStatus(PROCESS_ID, "In Progress", "Response dispatched — closing case");
+            await updateProcessListStatus(PROCESS_ID, "In Progress", "Response dispatched via Pega — closing case");
 
-            // --- Post-Email Step 7: Case Closed ---
+            // --- Post-Email Step 7: Pega Case Closure ---
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
                 id: "step-7",
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                title: "Pega Smart Dispute — Closing case, reversing provisional credit...",
+                title: "Pega Smart Dispute — Closing case...",
                 status: "processing"
             });
-            await updateProcessListStatus(PROCESS_ID, "In Progress", "Pega processing case closure...");
+            await updateProcessListStatus(PROCESS_ID, "In Progress", "Pega processing case closure and credit reversal...");
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
                 id: "step-7",
-                title: "Case Resolved — Merchant Representment Accepted",
+                title: "Pega Smart Dispute — Case Closed (Won — Representment Accepted)",
                 status: "completed",
                 reasoning: [
-                    "CHB-2026-0731 is now closed. The merchant's representment has been accepted",
-                    "and the provisional credit of $4,200.00 is being reversed.",
+                    "Case closed — CHB-2026-0731:",
+                    "  Resolution: Merchant representment accepted",
+                    "  Provisional credit reversed: $4,200.00 to cardholder account ****4892",
+                    "  Merchant: Grand Meridian Hotel & Suites — funds released",
                     "",
-                    "Resolution summary:",
-                    "  Cardholder claim: Hotel stay never rendered (booking cancelled)",
-                    "  Finding: Claim contradicted by cardholder's own email + 3 corroborating documents",
-                    "  Deciding evidence: Email thread proving date change, not cancellation",
-                    "  Outcome: Merchant wins — representment accepted",
-                    "  Action: Provisional credit of $4,200.00 reversed to cardholder account ****4892",
+                    "  Deciding evidence: Email correspondence (cardholder requested date change, not cancellation)",
+                    "  Corroboration: Signed check-in + in-room charges + non-refundable policy",
+                    "  Confidence: 97.2%",
+                    "  Pre-arbitration risk: LOW",
                     "",
-                    "Pace analyzed 4 unstructured merchant documents, extracted 23 facts,",
-                    "cross-referenced them against the dispute claim, and reached a determination",
-                    "in under 30 seconds — a process that typically takes an analyst 45-60 minutes.",
+                    "  Processing time: 28.4 seconds (vs ~52 minutes manual analyst average)",
+                    "  Documents analyzed: 4",
+                    "  Facts extracted: 23",
+                    "  Human touchpoints: 2 (analyst approval + email review)",
                     "",
-                    "Case routed to Pega for final closure and archival."
+                    "  Case archived to Pega Smart Dispute — Case Management"
                 ],
                 artifacts: [{
                     id: "case-closure-cb005",
@@ -507,10 +538,9 @@ const waitForEmailSent = async () => {
                         provisionalCreditReversed: "$4,200.00",
                         cardholderAccount: "****4892",
                         merchantName: "Grand Meridian Hotel & Suites",
-                        processingTime: "28.4 seconds (Pace) vs ~52 minutes (manual analyst average)",
+                        processingTime: "28.4 seconds",
                         documentsAnalyzed: 4,
                         factsExtracted: 23,
-                        crossReferencesPerformed: 5,
                         confidenceScore: "97.2%",
                         preArbitrationRisk: "LOW",
                         closedBy: "Pace Intelligence Layer + Analyst Approval",
@@ -518,7 +548,7 @@ const waitForEmailSent = async () => {
                     }
                 }]
             });
-            await updateProcessListStatus(PROCESS_ID, "Done", "Case closed — representment accepted, credit reversed");
+            await updateProcessListStatus(PROCESS_ID, "Done", "Pega Smart Dispute — Case Closed (Won — Representment Accepted)");
         } else {
             updateProcessLog(PROCESS_ID, {
                 id: step.id,
