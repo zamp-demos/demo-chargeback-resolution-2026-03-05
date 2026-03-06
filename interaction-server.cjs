@@ -631,7 +631,7 @@ Return ONLY the updated markdown content, nothing else (no code fences, no expla
         return;
     }
 
-    // === STATIC FILE SERVING ===
+    // === STATIC FILE SERVING (safe - returns 404 JSON if public dir missing) ===
     let filePath = path.join(PUBLIC_DIR, cleanPath === '/' ? 'index.html' : cleanPath);
 
     // Security check
@@ -640,33 +640,34 @@ Return ONLY the updated markdown content, nothing else (no code fences, no expla
         return;
     }
 
-    // Check if file exists
-    if (!fs.existsSync(filePath)) {
-        // Try appending .html
-        if (fs.existsSync(filePath + '.html')) {
-            filePath = filePath + '.html';
-        } else {
-            // Fallback to index.html for SPA routing
-            filePath = path.join(PUBLIC_DIR, 'index.html');
-        }
-    }
-
-    // Handle directories
-    if (fs.statSync(filePath).isDirectory()) {
-        filePath = path.join(filePath, 'index.html');
-    }
-
-    // Determine content type
-    const ext = path.extname(filePath);
-    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-
-    // Read and serve file
+    // Safely check if file exists before any stat calls
     try {
+        if (!fs.existsSync(filePath)) {
+            if (fs.existsSync(filePath + '.html')) {
+                filePath = filePath + '.html';
+            } else {
+                sendError(res, 404, 'Not found');
+                return;
+            }
+        }
+
+        const stats = fs.statSync(filePath);
+        if (stats.isDirectory()) {
+            const indexPath = path.join(filePath, 'index.html');
+            if (!fs.existsSync(indexPath)) {
+                sendError(res, 404, 'Not found');
+                return;
+            }
+            filePath = indexPath;
+        }
+
+        const ext = path.extname(filePath);
+        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
         const content = fs.readFileSync(filePath);
         res.writeHead(200, { ...corsHeaders, 'Content-Type': contentType });
         res.end(content);
     } catch (e) {
-        sendError(res, 404, 'File not found');
+        sendError(res, 404, 'Not found');
     }
 });
 
