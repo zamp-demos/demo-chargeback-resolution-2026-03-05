@@ -169,22 +169,22 @@ async function runSimulation() {
         {
             type: "image",
             title: "Document 1 — Hotel Check-In Registration Scan",
-            src: "/data/media/chb005_checkin_scan.png"
+            src: "/pdfs/chb005_checkin_scan.png"
         },
         {
             type: "file",
             title: "Document 2 — Email Correspondence Thread",
-            pdfPath: "/data/media/chb005_email_thread.pdf"
+            pdfPath: "/pdfs/chb005_email_thread.pdf"
         },
         {
             type: "file",
             title: "Document 3 — Hotel Cancellation & Modification Policy",
-            pdfPath: "/data/media/chb005_cancellation_policy.pdf"
+            pdfPath: "/pdfs/chb005_cancellation_policy.pdf"
         },
         {
             type: "file",
             title: "Document 4 — Hotel Folio / Itemized Invoice",
-            pdfPath: "/data/media/chb005_hotel_folio.pdf"
+            pdfPath: "/pdfs/chb005_hotel_folio.pdf"
         },
         {
             type: "json",
