@@ -406,23 +406,68 @@ const waitForSignal = async (signalId) => {
             await waitForSignal(step.hitlSignal);
             await updateProcessListStatus(PROCESS_ID, "In Progress", "Analyst approved — filing representment and escalating to fraud team");
 
+            // --- Post-HITL Step 9: VROL Filing ---
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
                 id: "step-9",
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                title: "VROL Filing + Fraud Team Alert + UiPath Notifications",
-                status: "completed",
+                title: "VROL Representment Filing",
+                status: "processing"
+            });
+            await updateProcessListStatus(PROCESS_ID, "In Progress", "Filing representment via VROL portal...");
+            await delay(2000);
+            updateProcessLog(PROCESS_ID, {
+                id: "step-9",
+                title: "VROL Representment Filed — 9-Page Evidence Package Submitted",
+                status: "success",
                 reasoning: [
                     "Representment filed via VROL:",
                     "  ARN: 3356-8812-0289-4471",
                     "  Evidence package: 9 pages including social media proof",
                     "  Fraud narrative flag: Active",
-                    "",
-                    "Fraud team escalation:",
+                    "  Reason code: RC 13.3 — Not as Described / Defective",
+                    "  Filing status: ACCEPTED — pending issuer review"
+                ]
+            });
+            await delay(1500);
+
+            // --- Post-HITL Step 10: Fraud Team Alert ---
+            updateProcessLog(PROCESS_ID, {
+                id: "step-10",
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                title: "Fraud Team Escalation",
+                status: "processing"
+            });
+            await updateProcessListStatus(PROCESS_ID, "In Progress", "Escalating to Meridian Bank Fraud Operations...");
+            await delay(2000);
+            updateProcessLog(PROCESS_ID, {
+                id: "step-10",
+                title: "Fraud Team Alert — Cardholder Added to Enhanced Monitoring",
+                status: "success",
+                reasoning: [
+                    "Fraud team escalation completed:",
                     "  Sarah M. Chen added to Enhanced Monitoring list",
                     "  Alert sent to Meridian Bank Fraud Operations",
                     "  Cross-reference flag set for future RC 13.3 disputes",
-                    "",
+                    "  Friendly fraud pattern: 3 disputes in 14 months flagged"
+                ]
+            });
+            await delay(1500);
+
+            // --- Post-HITL Step 11: UiPath RPA Closure ---
+            updateProcessLog(PROCESS_ID, {
+                id: "step-11",
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                title: "UiPath RPA — Ledger Posting & Notifications",
+                status: "processing"
+            });
+            await updateProcessListStatus(PROCESS_ID, "In Progress", "UiPath executing closure tasks...");
+            await delay(2000);
+            updateProcessLog(PROCESS_ID, {
+                id: "step-11",
+                title: "UiPath RPA — SAP Posted, Merchant Notified, Case Closed",
+                status: "completed",
+                reasoning: [
                     "UiPath RPA execution:",
                     "  SAP GL posting: Chargeback reserve $6,420.00 maintained",
                     "  Merchant notification: Artisan Home Furnishings updated",
