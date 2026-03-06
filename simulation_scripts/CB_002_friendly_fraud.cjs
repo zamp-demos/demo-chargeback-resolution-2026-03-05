@@ -115,23 +115,29 @@ const waitForSignal = async (signalId) => {
     const steps = [
         {
             id: "step-1",
-            title_p: "Pega Smart Dispute — Ingesting case CHB-2026-0289...",
-            title_s: "Pega Smart Dispute — Case Intake Received",
+            title_p: "Pega Smart Dispute — Triaging case CHB-2026-0289...",
+            title_s: "Pega Smart Dispute — Case Triaged, Routed to Pace (Complex Dispute)",
             reasoning: [
-                "Webhook received from Visa VROL — new chargeback filed",
-                "Case ID: CHB-2026-0289",
-                "Reason Code: Visa 13.3 — Not as Described / Defective Merchandise",
-                "Dispute amount: $6,420.00",
-                "Cardholder: Sarah M. Chen (card ending 3356)",
-                "Merchant: Artisan Home Furnishings (MCC 5712 — Furniture Stores)",
-                "Transaction date: February 10, 2026",
-                "Cardholder claim: 'Dining set arrived damaged, legs broken'",
-                "Pega case created — routing to Pace intelligence layer"
+                "Visa VROL webhook received — new chargeback filed under RC 13.3",
+                "Pega case CHB-2026-0289 created — running intake decisioning rules:",
+                "  Validated cardholder: Sarah M. Chen (card ending 3356)",
+                "  Merchant: Artisan Home Furnishings (MCC 5712 — Furniture Stores)",
+                "  Transaction date: February 10, 2026 — dispute amount: $6,420.00",
+                "  Cardholder claim: 'Dining set arrived damaged, legs broken'",
+                "  Core banking pull: Original authorization confirmed, no reversal on file",
+                "  SLA assignment: 15-day Visa representment window, deadline March 5, 2026",
+                "Pega rule engine flagged two risk indicators:",
+                "  1. Prior dispute found — Luxe Bedding Co, $3,180.00 (Jan 28, also RC 13.3)",
+                "  2. High-value claim ($6,420) exceeds auto-adjudication threshold ($5,000)",
+                "Pega routing decision — handing to Pace intelligence layer:",
+                "  Prior dispute + high-value claim triggers complex dispute classification",
+                "  Requires fraud pattern analysis and evidence judgment beyond rule engine",
+                "  Pace to investigate, score fraud likelihood, and recommend action"
             ],
             artifacts: [{
                 id: "case-intake",
                 type: "json",
-                label: "Pega Case Details",
+                label: "Pega Case Handoff",
                 data: {
                     case_id: "CHB-2026-0289",
                     reason_code: "Visa 13.3",
@@ -139,7 +145,10 @@ const waitForSignal = async (signalId) => {
                     cardholder: "Sarah M. Chen",
                     merchant: "Artisan Home Furnishings",
                     mcc: "5712",
-                    transaction_date: "2026-02-10"
+                    transaction_date: "2026-02-10",
+                    pega_triage: "Prior dispute flagged, high-value threshold exceeded",
+                    handoff_reason: "Complex dispute — fraud pattern analysis required",
+                    prior_dispute: "Luxe Bedding Co, $3,180.00, RC 13.3, Jan 28"
                 }
             }]
         },
@@ -152,7 +161,6 @@ const waitForSignal = async (signalId) => {
                 "  Prior dispute: January 28, 2026 — Luxe Bedding Co, $3,180.00",
                 "  That dispute also RC 13.3 (Not as Described)",
                 "  Prior dispute outcome: Refund granted (merchant did not contest)",
-                "",
                 "Merchant records — Artisan Home Furnishings:",
                 "  Order #AHF-90421 — 6-piece walnut dining set",
                 "  FedEx Freight delivery: February 14, signed 'S. Chen'",
@@ -202,7 +210,6 @@ const waitForSignal = async (signalId) => {
                 "  47 likes, 8 comments",
                 "  Comment from user @chen_mama: 'Beautiful! Where did you get it?'",
                 "  Reply from cardholder: 'Artisan Home Furnishings — worth every penny!'",
-                "",
                 "This directly contradicts the chargeback claim of damaged merchandise"
             ],
             artifacts: [{
@@ -229,7 +236,6 @@ const waitForSignal = async (signalId) => {
                 "  Dispute 1: Luxe Bedding Co — $3,180.00 (Jan 28, RC 13.3)",
                 "  Dispute 2: Artisan Home Furnishings — $6,420.00 (current, RC 13.3)",
                 "  Combined exposure: $9,600.00 in 25 days",
-                "",
                 "Pattern flags:",
                 "  Both disputes use identical reason code (Visa 13.3)",
                 "  Both merchants in MCC 5712 (Furniture Stores)",
@@ -265,7 +271,6 @@ const waitForSignal = async (signalId) => {
                 "  Identical RC and MCC across disputes: +12 points",
                 "  No return request or damage report filed: +8 points",
                 "  First dispute succeeded (learned behavior): +6 points",
-                "",
                 "Final Score: 89/100 (Confirmed Friendly Fraud Pattern)",
                 "Evidence Strength: 94/100 (Exceptional)",
                 "Recommendation: AGGRESSIVE REPRESENTMENT + Fraud Team Escalation"
@@ -311,15 +316,12 @@ const waitForSignal = async (signalId) => {
             title_s: "Analyst Review Required — Approve Fraud Evidence Package",
             reasoning: [
                 "HUMAN-IN-THE-LOOP checkpoint reached",
-                "",
                 "This case involves fraud team escalation beyond standard representment.",
                 "Analyst must review and approve before proceeding:",
-                "",
                 "  1. Rebuttal letter with social media evidence",
                 "  2. Dual-dispute pattern flagging cardholder for monitoring",
                 "  3. Fraud team alert to add Sarah M. Chen to watch list",
                 "  4. Potential law enforcement referral if pattern continues",
-                "",
                 "Awaiting analyst confirmation to proceed..."
             ],
             isHitl: true,
@@ -364,12 +366,10 @@ const waitForSignal = async (signalId) => {
                     "  ARN: 3356-8812-0289-4471",
                     "  Evidence package: 9 pages including social media proof",
                     "  Fraud narrative flag: Active",
-                    "",
                     "Fraud team escalation:",
                     "  Sarah M. Chen added to Enhanced Monitoring list",
                     "  Alert sent to Meridian Bank Fraud Operations",
                     "  Cross-reference flag set for future RC 13.3 disputes",
-                    "",
                     "UiPath RPA execution:",
                     "  SAP GL posting: Chargeback reserve $6,420.00 maintained",
                     "  Merchant notification: Artisan Home Furnishings updated",
