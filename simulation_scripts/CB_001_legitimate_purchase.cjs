@@ -251,6 +251,12 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
                     generated_by: "Pace Intelligence Layer",
                     status: "Ready for VROL submission"
                 }
+            },
+            {
+                id: "rebuttal-letter-pdf",
+                type: "file",
+                label: "View Full Rebuttal Letter (PDF)",
+                pdfPath: "/pdfs/chb001_rebuttal.pdf"
             }]
         },
         {
