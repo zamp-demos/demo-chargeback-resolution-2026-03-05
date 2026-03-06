@@ -150,7 +150,7 @@ const server = http.createServer(async (req, res) => {
                 const cases = [
                     {
                         id: "CHB_001",
-                        category: "Chargeback Resolution",
+                        category: "Dispute Resolution",
                         name: "NovaTech Electronics \u2014 Merchandise Not Received",
                         stockId: "CHB-2026-0147",
                         year: new Date().toISOString().split('T')[0],
@@ -164,7 +164,7 @@ const server = http.createServer(async (req, res) => {
                     },
                     {
                         id: "CHB_002",
-                        category: "Chargeback Resolution",
+                        category: "Dispute Resolution",
                         name: "Artisan Home Furnishings \u2014 Friendly Fraud Detection",
                         stockId: "CHB-2026-0289",
                         year: new Date().toISOString().split('T')[0],
@@ -178,7 +178,7 @@ const server = http.createServer(async (req, res) => {
                     },
                     {
                         id: "CHB_003",
-                        category: "Chargeback Resolution",
+                        category: "Dispute Resolution",
                         name: "CloudFit Athletic Gear \u2014 Pre-Arb Cost-Benefit Reversal",
                         stockId: "CHB-2026-0412",
                         year: new Date().toISOString().split('T')[0],
@@ -192,7 +192,7 @@ const server = http.createServer(async (req, res) => {
                     },
                     {
                         id: "CHB_004",
-                        category: "Chargeback Resolution",
+                        category: "Dispute Resolution",
                         name: "Pinnacle Electronics \u2014 Missing Evidence Escalation",
                         stockId: "CHB-2026-0583",
                         year: new Date().toISOString().split('T')[0],
@@ -207,7 +207,7 @@ const server = http.createServer(async (req, res) => {
                     ,
                     {
                         id: "CHB_005",
-                        category: "Chargeback Resolution",
+                        category: "Dispute Resolution",
                         name: "Grand Meridian Hotel \u2014 Representment Document Analysis",
                         stockId: "CHB-2026-0731",
                         year: new Date().toISOString().split('T')[0],
@@ -221,7 +221,7 @@ const server = http.createServer(async (req, res) => {
                     },
                     {
                         id: "CHB_006",
-                        category: "Chargeback Resolution",
+                        category: "Dispute Resolution",
                         name: "TechVault Electronics \u2014 Premature Dispute Hold",
                         stockId: "CHB-2026-0588",
                         year: new Date().toISOString().split('T')[0],

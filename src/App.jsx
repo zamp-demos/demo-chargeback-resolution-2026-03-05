@@ -15,7 +15,7 @@ function App() {
         <Route path="/done" element={<DashboardLayout />}>
           <Route index element={<Navigate to="chargeback-resolution" replace />} />
           <Route path="chargeback-resolution" element={
-            <ProcessList key="chargeback-resolution" title="Chargeback Resolution" category="Chargeback Resolution" />
+            <ProcessList key="chargeback-resolution" title="Dispute Resolution" category="Dispute Resolution" />
           } />
           <Route path="knowledge-base" element={<KnowledgeBase />} />
           <Route path="people" element={<PeoplePage />} />

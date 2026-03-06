@@ -172,7 +172,7 @@ const DashboardLayout = () => {
                         <SidebarItem
                             to="/done/chargeback-resolution"
                             icon={<Activity />}
-                            label="Chargeback Resolution"
+                            label="Dispute Resolution"
                             isActive={location.pathname.includes('chargeback-resolution') || isProcessDetailPage}
                         />
                     </div>
@@ -230,7 +230,7 @@ const DashboardLayout = () => {
                                     <button onClick={() => navigate('/done/chargeback-resolution')} className="hover:bg-white rounded p-1 transition-colors">
                                         <ArrowLeft className="w-3.5 h-3.5 text-[#171717]" />
                                     </button>
-                                    <span className="text-[#8f8f8f] font-normal">Chargeback Resolution /</span>
+                                    <span className="text-[#8f8f8f] font-normal">Dispute Resolution /</span>
                                     <span className="text-[#171717] font-bold">Knowledge Base</span>
                                 </>
                             ) : isProcessDetailPage ? (
@@ -238,12 +238,12 @@ const DashboardLayout = () => {
                                     <button onClick={() => navigate('/done/chargeback-resolution')} className="hover:bg-white rounded p-1 transition-colors">
                                         <ArrowLeft className="w-3.5 h-3.5 text-[#171717]" />
                                     </button>
-                                    <span className="text-[#171717] font-[550]">Chargeback Resolution</span>
+                                    <span className="text-[#171717] font-[550]">Dispute Resolution</span>
                                     <ChevronRight className="w-3.5 h-3.5 text-[#c9c9c9]" />
                                     <span className="text-[#171717] font-[550]">Activity Logs</span>
                                 </>
                             ) : (
-                                <span className="text-[#171717] font-[550]">Chargeback Resolution</span>
+                                <span className="text-[#171717] font-[550]">Dispute Resolution</span>
                             )}
                         </div>
                     </div>
