@@ -187,10 +187,9 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
         },
         {
             id: "step-5",
-            title_p: "Computing fraud likelihood score with Gemini...",
+            title_p: "Computing fraud likelihood score...",
             title_s: "Fraud Likelihood Scoring — Score: 8/100 (Low Risk)",
             reasoning: [
-                "Gemini multi-factor fraud analysis:",
                 "  Delivery confirmed with signature match: -30 points",
                 "  GPS confidence 99.2%: -15 points",
                 "  4 prior clean orders with merchant: -20 points",

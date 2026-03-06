@@ -281,10 +281,9 @@ const waitForSignal = async (signalId) => {
         },
         {
             id: "step-6",
-            title_p: "Computing fraud likelihood score with Gemini...",
+            title_p: "Computing fraud likelihood score...",
             title_s: "Fraud Likelihood Scoring — Score: 42/100 (Moderate / Inconclusive)",
             reasoning: [
-                "Gemini multi-factor fraud analysis:",
                 "  3DS frictionless authentication (ECI 05): -20 points",
                 "  IP geolocation mismatch (600+ miles): +18 points",
                 "  Unknown device not in history: +15 points",

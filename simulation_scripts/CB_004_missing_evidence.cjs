@@ -273,10 +273,9 @@ const waitForEmailSent = async () => {
         },
         {
             id: "step-5",
-            title_p: "Computing fraud likelihood score with Gemini...",
+            title_p: "Computing fraud likelihood score...",
             title_s: "Fraud Likelihood Scoring — Score: 28/100 (Low Risk — Genuine MNR)",
             reasoning: [
-                "Gemini multi-factor fraud analysis:",
                 "  Cardholder first dispute ever: -15 points",
                 "  Account in good standing since 2021: -10 points",
                 "  No prior fraud indicators: -8 points",

@@ -269,10 +269,9 @@ const waitForSignal = async (signalId) => {
         },
         {
             id: "step-6",
-            title_p: "Computing fraud likelihood score with Gemini...",
+            title_p: "Computing fraud likelihood score...",
             title_s: "Fraud Likelihood Scoring — Score: 89/100 (Confirmed Friendly Fraud)",
             reasoning: [
-                "Gemini multi-factor fraud analysis:",
                 "  Instagram post contradicting damage claim: +25 points",
                 "  Positive email to merchant post-delivery: +20 points",
                 "  Dual-dispute pattern (2 in 25 days): +18 points",

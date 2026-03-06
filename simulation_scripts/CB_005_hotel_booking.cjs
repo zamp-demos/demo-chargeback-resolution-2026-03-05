@@ -398,10 +398,9 @@ const waitForEmailSent = async () => {
         },
         {
             id: "step-4",
-            title_p: "Computing representment verdict with Gemini...",
+            title_p: "Computing representment verdict...",
             title_s: "Representment Verdict — Merchant Wins (97.2% Confidence)",
             reasoning: [
-                "Gemini representment analysis — CHB-2026-0731:",
                 "  Evidence cross-reference score: 5/5 tests contradict cardholder claim",
                 "  Deciding document: Email correspondence thread (Document 2)",
                 "    Key fact: Cardholder wrote 'move my dates' — proves modification, not cancellation",
