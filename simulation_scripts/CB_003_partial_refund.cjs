@@ -223,10 +223,26 @@ const waitForSignal = async (signalId) => {
                 "  Decision deadline: 10 calendar days"
             ],
             artifacts: [{
-                id: "vrol-video",
-                type: "video",
+                id: "vrol-status",
+                type: "json",
                 label: "VROL Portal — Rejection Details",
-                url: "/mocks/chb003_vrol_browser.webm"
+                data: {
+                    portal: "Visa Resolve Online (VROL)",
+                    case_reference: "CHB-2026-0412",
+                    arn: "6709-3388-0412-1180",
+                    first_representment: {
+                        filed_date: "2026-02-15",
+                        evidence_submitted: "3DS authentication logs, merchant delivery records",
+                        ruling: "REJECTED",
+                        rejection_reason: "CE 3.0 Rule 10.4.3 not satisfied",
+                        visa_notes: "IP/device mismatch undermines 3DS frictionless authentication evidence"
+                    },
+                    current_stage: "Pre-Arbitration",
+                    arbitration_deadline: "2026-03-16 (10 calendar days)",
+                    arbitration_filing_fee: "$500.00 (non-refundable if lost)",
+                    options: "Escalate to arbitration OR accept liability",
+                    retrieved_by: "Pace — automated VROL status check"
+                }
             }]
         },
         {
