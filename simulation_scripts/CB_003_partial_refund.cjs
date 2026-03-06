@@ -247,40 +247,6 @@ const waitForSignal = async (signalId) => {
         },
         {
             id: "step-5",
-            title_p: "Running pre-arbitration cost-benefit analysis...",
-            title_s: "Pre-Arbitration Cost-Benefit Analysis — Negative Expected Value",
-            reasoning: [
-                "Arbitration financial analysis:",
-                "  Dispute amount: $1,180.00",
-                "  Arbitration filing fee: $500.00 (non-refundable if lost)",
-                "  Win probability: 35% (weak evidence after CE 3.0 rejection)",
-                "",
-                "Expected value calculation:",
-                "  If win (35%):  +$1,180.00 recovered",
-                "  If lose (65%): -$500.00 filing fee (amount already lost)",
-                "  Expected value: (0.35 × $1,180) - (0.65 × $500) = $413 - $325 = +$88",
-                "  Minus internal processing cost (~$175): Net EV = -$87.00",
-                "",
-                "Recommendation: ACCEPT LIABILITY — negative expected value",
-                "Arbitration is not economically justified for this case"
-            ],
-            artifacts: [{
-                id: "cost-benefit",
-                type: "json",
-                label: "Pre-Arb Cost-Benefit Model",
-                data: {
-                    dispute_amount: "$1,180.00",
-                    filing_fee: "$500.00",
-                    win_probability: "35%",
-                    expected_recovery: "$413.00",
-                    expected_cost: "$500.00",
-                    net_expected_value: "-$87.00",
-                    recommendation: "Accept liability"
-                }
-            }]
-        },
-        {
-            id: "step-6",
             title_p: "Computing fraud likelihood score...",
             title_s: "Fraud Likelihood Scoring — Score: 42/100 (Moderate / Inconclusive)",
             reasoning: [
@@ -309,7 +275,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-7",
+            id: "step-6",
             title_p: "Awaiting analyst review of cost-benefit recommendation...",
             title_s: "Analyst Review — Accept Liability Recommendation ($-87 EV)",
             reasoning: [
@@ -372,10 +338,10 @@ const waitForSignal = async (signalId) => {
             await waitForSignal(step.hitlSignal);
             await updateProcessListStatus(PROCESS_ID, "In Progress", "Analyst approved liability acceptance — posting to SAP");
 
-            // --- Post-HITL Step 8: SAP Liability Posting ---
+            // --- Post-HITL Step 7: SAP Liability Posting ---
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
-                id: "step-8",
+                id: "step-7",
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 title: "UiPath — Posting liability to SAP General Ledger...",
                 status: "processing"
@@ -383,7 +349,7 @@ const waitForSignal = async (signalId) => {
             await updateProcessListStatus(PROCESS_ID, "In Progress", "UiPath posting liability to SAP...");
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
-                id: "step-8",
+                id: "step-7",
                 title: "UiPath — SAP Liability Posted ($1,180.00 to GL 2380)",
                 status: "success",
                 reasoning: [
@@ -396,9 +362,9 @@ const waitForSignal = async (signalId) => {
             });
             await delay(1500);
 
-            // --- Post-HITL Step 9: Merchant Notification ---
+            // --- Post-HITL Step 8: Merchant Notification ---
             updateProcessLog(PROCESS_ID, {
-                id: "step-9",
+                id: "step-8",
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 title: "UiPath — Sending merchant notification...",
                 status: "processing"
@@ -406,7 +372,7 @@ const waitForSignal = async (signalId) => {
             await updateProcessListStatus(PROCESS_ID, "In Progress", "Notifying CloudFit Athletic Gear...");
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
-                id: "step-9",
+                id: "step-8",
                 title: "UiPath — CloudFit Athletic Gear Notified (No Further Action)",
                 status: "success",
                 reasoning: [
@@ -419,9 +385,9 @@ const waitForSignal = async (signalId) => {
             });
             await delay(1500);
 
-            // --- Post-HITL Step 10: Pega Case Closure ---
+            // --- Post-HITL Step 9: Pega Case Closure ---
             updateProcessLog(PROCESS_ID, {
-                id: "step-10",
+                id: "step-9",
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 title: "Pega Smart Dispute — Closing case...",
                 status: "processing"
@@ -429,7 +395,7 @@ const waitForSignal = async (signalId) => {
             await updateProcessListStatus(PROCESS_ID, "In Progress", "Finalizing case closure...");
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
-                id: "step-10",
+                id: "step-9",
                 title: "Pega Smart Dispute — Case Closed (Liability Accepted — $587 Saved)",
                 status: "completed",
                 reasoning: [
