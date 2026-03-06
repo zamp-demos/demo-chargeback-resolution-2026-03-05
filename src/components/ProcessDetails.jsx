@@ -1016,7 +1016,7 @@ const ProcessDetails = () => {
             const localSavedStatus = sessionStorage.getItem(`case_status_${id}`);
             if (isSimulating || localSavedStatus === 'Done') return; // SKIP updates during simulation or if "Done"
             try {
-                const response = await fetch('/data/processes.json');
+                const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/data/processes.json`);
                 if (response.ok) {
                     const processes = await response.json();
                     setAllProcesses(processes);
