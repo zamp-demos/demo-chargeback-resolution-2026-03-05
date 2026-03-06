@@ -230,9 +230,27 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
             ],
             artifacts: [{
                 id: "rebuttal-pdf",
-                type: "pdf",
+                type: "json",
                 label: "Representment Rebuttal — RC 13.1",
-                url: "/pdfs/chb001_rebuttal.pdf"
+                data: {
+                    document_type: "Visa Representment Rebuttal Letter",
+                    case_id: "CHB-2026-0147",
+                    reason_code: "Visa 13.1 — Merchandise Not Received",
+                    dispute_amount: "$2,847.00",
+                    filing_type: "First Representment",
+                    evidence_summary: {
+                        delivery_proof: "FedEx tracking 7729-4481-0037 — Delivered Feb 24, signed J. PATTERSON",
+                        gps_confidence: "99.2% match to billing address",
+                        photo_proof: "Photo-on-delivery confirms package at front porch",
+                        ce3_compliance: "Rule 13.1.4 SATISFIED — 4 prior undisputed transactions",
+                        customer_history: "Zero prior disputes, Gold loyalty tier since 2024"
+                    },
+                    legal_basis: "Visa CE 3.0 Rule 13.1.4 — Compelling Evidence shifts liability to issuer",
+                    conclusion: "Evidence conclusively demonstrates merchandise was delivered to and received by the cardholder. Representment filed with full CE 3.0 compliance.",
+                    total_pages: 6,
+                    generated_by: "Pace Intelligence Layer",
+                    status: "Ready for VROL submission"
+                }
             }]
         },
         {
