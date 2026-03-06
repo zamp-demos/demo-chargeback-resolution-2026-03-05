@@ -314,9 +314,33 @@ const waitForSignal = async (signalId) => {
             ],
             artifacts: [{
                 id: "rebuttal-pdf",
-                type: "pdf",
+                type: "json",
                 label: "Fraud Narrative Rebuttal — RC 13.3",
-                url: "/pdfs/chb002_rebuttal.pdf"
+                data: {
+                    document_type: "Visa Fraud Narrative Rebuttal Letter",
+                    case_id: "CHB-2026-0289",
+                    reason_code: "Visa 13.3 — Not as Described / Defective",
+                    dispute_amount: "$6,420.00",
+                    filing_type: "Aggressive Representment — Fraud Escalation",
+                    evidence_summary: {
+                        social_media: "Instagram post Feb 16 — cardholder showcasing undamaged product, quote: 'worth every penny!'",
+                        positive_email: "Feb 18 email to merchant: 'Absolutely love the craftsmanship'",
+                        delivery_proof: "FedEx Freight signed delivery, signed S. Chen",
+                        merchant_records: "No damage claim, no return request filed",
+                        dual_dispute_pattern: "2 disputes in 25 days, both RC 13.3, both furniture MCC 5712",
+                        prior_dispute: "Luxe Bedding Co $3,180 — refund granted (no merchant contest)"
+                    },
+                    fraud_indicators: {
+                        fraud_score: "89/100 — Confirmed Friendly Fraud",
+                        pattern: "Serial friendly fraud escalation",
+                        combined_exposure: "$9,600.00 across 2 disputes in 25 days"
+                    },
+                    legal_basis: "Cardholder's own social media and email directly contradict damage claim. Dual-dispute pattern establishes fraud intent.",
+                    conclusion: "Overwhelming evidence of friendly fraud. Cardholder praised product publicly, then filed false damage claim. Recommend fraud team escalation and watch list addition.",
+                    total_pages: 9,
+                    generated_by: "Pace Intelligence Layer",
+                    status: "Pending analyst approval"
+                }
             }]
         },
         {
