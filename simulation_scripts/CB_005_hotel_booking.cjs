@@ -225,9 +225,9 @@ const waitForEmailSent = async () => {
             artifacts: [
                 {
                     id: "doc1-checkin",
-                    type: "image",
+                    type: "file",
                     label: "Document 1 — Hotel Check-In Registration Scan",
-                    src: "/pdfs/chb005_checkin_scan.png"
+                    pdfPath: "/pdfs/chb005_checkin_scan.pdf"
                 },
                 {
                     id: "doc2-email",
