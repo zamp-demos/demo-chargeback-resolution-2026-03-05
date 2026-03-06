@@ -445,8 +445,6 @@ const waitForEmailSent = async () => {
             title_p: "Awaiting analyst approval of representment verdict...",
             title_s: "Approve Representment Acceptance",
             reasoning: [
-                "HUMAN-IN-THE-LOOP checkpoint reached",
-                "",
                 "Recommendation: Accept merchant representment",
                 "  Verdict: Merchant wins — confidence 97.2%",
                 "  Action: Reverse provisional credit of $4,200.00",
