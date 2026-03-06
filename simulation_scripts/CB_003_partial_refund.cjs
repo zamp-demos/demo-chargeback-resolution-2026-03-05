@@ -156,38 +156,61 @@ const waitForSignal = async (signalId) => {
         },
         {
             id: "step-2",
-            title_p: "Pulling 3DS authentication logs and device fingerprint data...",
-            title_s: "Evidence Gathering — 3DS Authentication + Device Fingerprint",
+            title_p: "Pulling 3D Secure authentication logs...",
+            title_s: "3DS Authentication — Frictionless Flow, Liability Shift to Issuer",
             reasoning: [
-                "3D Secure 2.0 authentication analysis:",
+                "3D Secure 2.0 authentication analysis for transaction Jan 30:",
                 "  Authentication type: Frictionless flow (no challenge issued)",
                 "  ECI indicator: 05 (fully authenticated, liability shift to issuer)",
                 "  3DS Server: Visa Directory Server v2.2.0",
-                "Device fingerprint analysis:",
-                "  Transaction IP: 172.58.91.204 (Phoenix, AZ)",
-                "  Cardholder registered address: Denver, CO",
-                "  IP geolocation mismatch: 600+ miles from billing address",
-                "  Device: Chrome 121 / Windows 11 — not in cardholder device history",
-                "  Browser language: en-US (consistent)",
-                "Mixed signals: 3DS authenticated but device/IP anomalies present"
+                "  Cardholder enrolled in Visa Secure since October 2024",
+                "  Authentication completed in 1.2 seconds — risk engine auto-approved",
+                "3DS liability shift favors merchant — but this was already argued in first representment"
             ],
             artifacts: [{
-                id: "3ds-analysis",
+                id: "3ds-logs",
                 type: "json",
-                label: "3DS + Device Analysis",
+                label: "3DS Authentication Logs",
                 data: {
                     auth_type: "Frictionless 3DS 2.0",
                     eci: "05",
                     liability_shift: "Issuer",
-                    ip_location: "Phoenix, AZ",
-                    billing_location: "Denver, CO",
-                    ip_mismatch: true,
-                    device_known: false
+                    enrolled_since: "October 2024",
+                    auth_time: "1.2s"
                 }
             }]
         },
         {
             id: "step-3",
+            title_p: "Analyzing device fingerprint and IP geolocation data...",
+            title_s: "Device Fingerprint — IP Mismatch, Unknown Device Detected",
+            reasoning: [
+                "Device fingerprint analysis for transaction Jan 30:",
+                "  Transaction IP: 172.58.91.204 (Phoenix, AZ)",
+                "  Cardholder registered address: Denver, CO",
+                "  IP geolocation mismatch: 600+ miles from billing address",
+                "  Device: Chrome 121 / Windows 11 — not in cardholder device history",
+                "  Browser language: en-US (consistent)",
+                "  No VPN or proxy detected — appears to be a legitimate mobile carrier IP",
+                "Mixed signals: 3DS authenticated but device and IP don’t match cardholder profile"
+            ],
+            artifacts: [{
+                id: "device-fingerprint",
+                type: "json",
+                label: "Device Fingerprint Report",
+                data: {
+                    ip_address: "172.58.91.204",
+                    ip_location: "Phoenix, AZ",
+                    billing_location: "Denver, CO",
+                    distance: "600+ miles",
+                    device: "Chrome 121 / Windows 11",
+                    device_known: false,
+                    vpn_detected: false
+                }
+            }]
+        },
+        {
+            id: "step-4",
             title_p: "Checking VROL for prior representment outcome...",
             title_s: "VROL Status Check — Representment Previously Rejected",
             reasoning: [
@@ -210,7 +233,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-4",
+            id: "step-5",
             title_p: "Running pre-arbitration cost-benefit analysis...",
             title_s: "Pre-Arbitration Cost-Benefit Analysis — Negative Expected Value",
             reasoning: [
@@ -242,7 +265,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-5",
+            id: "step-6",
             title_p: "Computing fraud likelihood score with Gemini...",
             title_s: "Fraud Likelihood Scoring — Score: 42/100 (Moderate / Inconclusive)",
             reasoning: [
@@ -271,7 +294,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-6",
+            id: "step-7",
             title_p: "Awaiting analyst review of cost-benefit recommendation...",
             title_s: "Analyst Review — Accept Liability Recommendation ($-87 EV)",
             reasoning: [
@@ -322,8 +345,7 @@ const waitForSignal = async (signalId) => {
 
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
-                id: "step-7",
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                id: "step-8"                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 title: "SAP Liability Posting + Pega Case Closure",
                 status: "completed",
                 reasoning: [
