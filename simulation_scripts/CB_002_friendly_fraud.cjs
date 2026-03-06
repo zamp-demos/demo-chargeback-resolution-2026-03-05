@@ -341,6 +341,12 @@ const waitForSignal = async (signalId) => {
                     generated_by: "Pace Intelligence Layer",
                     status: "Pending analyst approval"
                 }
+            },
+            {
+                id: "rebuttal-letter-pdf",
+                type: "file",
+                label: "View Full Rebuttal Letter (PDF)",
+                pdfPath: "/pdfs/chb002_rebuttal.pdf"
             }]
         },
         {
