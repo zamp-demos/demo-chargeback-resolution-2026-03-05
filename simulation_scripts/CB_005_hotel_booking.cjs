@@ -443,7 +443,7 @@ const waitForEmailSent = async () => {
         {
             id: "step-5",
             title_p: "Awaiting analyst approval of representment verdict...",
-            title_s: "Analyst Review Required — Approve Representment Acceptance",
+            title_s: "Approve Representment Acceptance",
             reasoning: [
                 "HUMAN-IN-THE-LOOP checkpoint reached",
                 "",
