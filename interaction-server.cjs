@@ -218,6 +218,20 @@ const server = http.createServer(async (req, res) => {
                         disputeAmount: "$4,200.00",
                         cardholderName: "Katherine E. Whitfield",
                         merchantName: "Grand Meridian Hotel \u0026 Suites"
+                    },
+                    {
+                        id: "CHB_006",
+                        category: "Chargeback Resolution",
+                        name: "TechVault Electronics \u2014 Premature Dispute Hold",
+                        stockId: "CHB-2026-0588",
+                        year: new Date().toISOString().split('T')[0],
+                        status: "In Progress",
+                        currentStatus: "Initializing...",
+                        caseId: "CHB-2026-0588",
+                        reasonCode: "Visa 13.1",
+                        disputeAmount: "$892.00",
+                        cardholderName: "Marcus J. Rivera",
+                        merchantName: "TechVault Electronics"
                     }
                 ];
                 fs.writeFileSync(processesPath, JSON.stringify(cases, null, 4));
@@ -235,7 +249,8 @@ const server = http.createServer(async (req, res) => {
                     { file: 'CB_002_friendly_fraud.cjs', id: 'CB_002' },
                     { file: 'CB_003_partial_refund.cjs', id: 'CB_003' },
                     { file: 'CB_004_missing_evidence.cjs', id: 'CB_004' },
-                    { file: 'CB_005_hotel_booking.cjs', id: 'CB_005' }
+                    { file: 'CB_005_hotel_booking.cjs', id: 'CB_005' },
+                    { file: 'CB_006_premature_dispute.cjs', id: 'CB_006' }
                 ];
 
                 let totalDelay = 0;
