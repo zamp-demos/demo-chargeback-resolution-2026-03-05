@@ -175,15 +175,7 @@ const waitForSignal = async (signalId) => {
                 "Device fingerprint analysis for transaction:",
                 "  Transaction IP: 172.58.91.204 (Phoenix, AZ — T-Mobile cellular)",
                 "  Cardholder registered address: Denver, CO",
-                "  Distance: 600+ miles from billing address",
-                "  Device: Chrome 121 / Windows 11",
-                "  Device not found in cardholder's known device history",
-                "  Browser language: en-US (consistent, non-diagnostic)",
-                "",
-                "IP and device anomalies are significant — this was the basis for",
-                "Visa rejecting the first representment. The 3DS liability shift",
-                "is undermined by evidence the transaction may not have originated",
-                "from the cardholder's usual location or device"
+                "  Distance: 600+ miles from billing address"
             ],
             artifacts: [{
                 id: "device-fingerprint",
