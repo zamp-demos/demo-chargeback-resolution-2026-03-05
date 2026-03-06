@@ -35,7 +35,8 @@ if (!fs.existsSync(signalFilePath)) {
     fs.writeFileSync(signalFilePath, JSON.stringify({
         APPROVE_EVIDENCE_CB002: false,
         APPROVE_PARTIAL_REFUND_CB003: false,
-        APPROVE_EVIDENCE_REQUEST_CB004: false
+        APPROVE_EVIDENCE_REQUEST_CB004: false,
+        APPROVE_REPRESENTMENT_CB005: false
     }, null, 4));
 }
 
@@ -130,7 +131,8 @@ const server = http.createServer(async (req, res) => {
         fs.writeFileSync(signalFilePath, JSON.stringify({
             APPROVE_EVIDENCE_CB002: false,
             APPROVE_PARTIAL_REFUND_CB003: false,
-            APPROVE_EVIDENCE_REQUEST_CB004: false
+            APPROVE_EVIDENCE_REQUEST_CB004: false,
+            APPROVE_REPRESENTMENT_CB005: false
         }, null, 4));
 
         // Kill existing tracked processes
@@ -202,6 +204,21 @@ const server = http.createServer(async (req, res) => {
                         cardholderName: "Michael T. Rivera",
                         merchantName: "Pinnacle Electronics"
                     }
+                    ,
+                    {
+                        id: "CHB_005",
+                        category: "Chargeback Resolution",
+                        name: "Grand Meridian Hotel \u2014 Representment Document Analysis",
+                        stockId: "CHB-2026-0731",
+                        year: new Date().toISOString().split('T')[0],
+                        status: "In Progress",
+                        currentStatus: "Initializing...",
+                        caseId: "CHB-2026-0731",
+                        reasonCode: "Visa 13.1",
+                        disputeAmount: "$4,200.00",
+                        cardholderName: "Katherine E. Whitfield",
+                        merchantName: "Grand Meridian Hotel \u0026 Suites"
+                    }
                 ];
                 fs.writeFileSync(processesPath, JSON.stringify(cases, null, 4));
 
@@ -217,7 +234,8 @@ const server = http.createServer(async (req, res) => {
                     { file: 'CB_001_legitimate_purchase.cjs', id: 'CB_001' },
                     { file: 'CB_002_friendly_fraud.cjs', id: 'CB_002' },
                     { file: 'CB_003_partial_refund.cjs', id: 'CB_003' },
-                    { file: 'CB_004_missing_evidence.cjs', id: 'CB_004' }
+                    { file: 'CB_004_missing_evidence.cjs', id: 'CB_004' },
+                    { file: 'CB_005_hotel_booking.cjs', id: 'CB_005' }
                 ];
 
                 let totalDelay = 0;
