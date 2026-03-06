@@ -24,7 +24,7 @@ if (!fs.existsSync(SNAPSHOTS_DIR)) fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true
 // Initialize processes.json from base_processes.json if not exists
 const baseProcessesPath = path.join(DATA_DIR, 'base_processes.json');
 const processesPath = path.join(DATA_DIR, 'processes.json');
-if (fs.existsSync(baseProcessesPath)) {
+if (fs.existsSync(baseProcessesPath) && !fs.existsSync(processesPath)) {
     fs.copyFileSync(baseProcessesPath, processesPath);
     console.log('Initialized processes.json from base_processes.json');
 }
@@ -142,12 +142,52 @@ const server = http.createServer(async (req, res) => {
         // Kill straggler simulation processes
         exec('pkill -9 -f "node(.*)simulation_scripts" || true', (err) => {
             setTimeout(() => {
-                // Initialize cases from base_processes.json
-                if (fs.existsSync(baseProcessesPath)) {
-                    fs.copyFileSync(baseProcessesPath, processesPath);
-                    console.log('Reset: Restored processes.json from base_processes.json');
-                }
-                const cases = JSON.parse(fs.readFileSync(processesPath, 'utf8'));
+                // Initialize cases
+                const cases = [
+                    {
+                        id: "CB_001",
+                        name: "CB_001 - Legitimate Purchase Confirmed",
+                        category: "Chargeback Disputes",
+                        stockId: "TXN-892471",
+                        year: new Date().toISOString().split('T')[0],
+                        status: "In Progress",
+                        currentStatus: "Initializing...",
+                        transactionId: "TXN-892471",
+                        cardLast4: "4532",
+                        amount: "$89.99",
+                        merchant: "TechStore Inc.",
+                        disputeReason: "Did not authorize"
+                    },
+                    {
+                        id: "CB_002",
+                        name: "CB_002 - Friendly Fraud Detected",
+                        category: "Chargeback Disputes",
+                        stockId: "TXN-551203",
+                        year: new Date().toISOString().split('T')[0],
+                        status: "In Progress",
+                        currentStatus: "Initializing...",
+                        transactionId: "TXN-551203",
+                        cardLast4: "7891",
+                        amount: "$249.99",
+                        merchant: "StreamFlix Premium",
+                        disputeReason: "Subscription not authorized"
+                    },
+                    {
+                        id: "CB_003",
+                        name: "CB_003 - Partial Refund Negotiation",
+                        category: "Chargeback Disputes",
+                        stockId: "TXN-663812",
+                        year: new Date().toISOString().split('T')[0],
+                        status: "In Progress",
+                        currentStatus: "Initializing...",
+                        transactionId: "TXN-663812",
+                        cardLast4: "2209",
+                        amount: "$1,499.00",
+                        merchant: "LuxeFurniture Co.",
+                        disputeReason: "Product damaged on arrival"
+                    }
+                ];
+                fs.writeFileSync(processesPath, JSON.stringify(cases, null, 4));
 
                 // Reset feedback queue and KB versions
                 fs.writeFileSync(FEEDBACK_QUEUE_PATH, '[]');
@@ -591,7 +631,7 @@ Return ONLY the updated markdown content, nothing else (no code fences, no expla
         return;
     }
 
-    // === STATIC FILE SERVING (safe - returns 404 JSON if public dir missing) ===
+    // === STATIC FILE SERVING ===
     let filePath = path.join(PUBLIC_DIR, cleanPath === '/' ? 'index.html' : cleanPath);
 
     // Security check
@@ -600,34 +640,33 @@ Return ONLY the updated markdown content, nothing else (no code fences, no expla
         return;
     }
 
-    // Safely check if file exists before any stat calls
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+        // Try appending .html
+        if (fs.existsSync(filePath + '.html')) {
+            filePath = filePath + '.html';
+        } else {
+            // Fallback to index.html for SPA routing
+            filePath = path.join(PUBLIC_DIR, 'index.html');
+        }
+    }
+
+    // Handle directories
+    if (fs.statSync(filePath).isDirectory()) {
+        filePath = path.join(filePath, 'index.html');
+    }
+
+    // Determine content type
+    const ext = path.extname(filePath);
+    const contentType = MIME_TYPES[ext] || 'application/octet-stream';
+
+    // Read and serve file
     try {
-        if (!fs.existsSync(filePath)) {
-            if (fs.existsSync(filePath + '.html')) {
-                filePath = filePath + '.html';
-            } else {
-                sendError(res, 404, 'Not found');
-                return;
-            }
-        }
-
-        const stats = fs.statSync(filePath);
-        if (stats.isDirectory()) {
-            const indexPath = path.join(filePath, 'index.html');
-            if (!fs.existsSync(indexPath)) {
-                sendError(res, 404, 'Not found');
-                return;
-            }
-            filePath = indexPath;
-        }
-
-        const ext = path.extname(filePath);
-        const contentType = MIME_TYPES[ext] || 'application/octet-stream';
         const content = fs.readFileSync(filePath);
         res.writeHead(200, { ...corsHeaders, 'Content-Type': contentType });
         res.end(content);
     } catch (e) {
-        sendError(res, 404, 'Not found');
+        sendError(res, 404, 'File not found');
     }
 });
 
