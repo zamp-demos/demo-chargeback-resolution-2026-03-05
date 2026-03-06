@@ -34,7 +34,8 @@ const signalFilePath = path.join(__dirname, 'interaction-signals.json');
 if (!fs.existsSync(signalFilePath)) {
     fs.writeFileSync(signalFilePath, JSON.stringify({
         APPROVE_EVIDENCE_CB002: false,
-        APPROVE_PARTIAL_REFUND_CB003: false
+        APPROVE_PARTIAL_REFUND_CB003: false,
+        APPROVE_EVIDENCE_REQUEST_CB004: false
     }, null, 4));
 }
 
@@ -128,7 +129,8 @@ const server = http.createServer(async (req, res) => {
         // Reset signals file
         fs.writeFileSync(signalFilePath, JSON.stringify({
             APPROVE_EVIDENCE_CB002: false,
-            APPROVE_PARTIAL_REFUND_CB003: false
+            APPROVE_PARTIAL_REFUND_CB003: false,
+            APPROVE_EVIDENCE_REQUEST_CB004: false
         }, null, 4));
 
         // Kill existing tracked processes
@@ -185,6 +187,20 @@ const server = http.createServer(async (req, res) => {
                         disputeAmount: "$1,180.00",
                         cardholderName: "David L. Morrison",
                         merchantName: "CloudFit Athletic Gear"
+                    },
+                    {
+                        id: "CHB_004",
+                        category: "Chargeback Resolution",
+                        name: "Pinnacle Electronics \u2014 Missing Evidence Escalation",
+                        stockId: "CHB-2026-0583",
+                        year: new Date().toISOString().split('T')[0],
+                        status: "In Progress",
+                        currentStatus: "Initializing...",
+                        caseId: "CHB-2026-0583",
+                        reasonCode: "Visa 13.1",
+                        disputeAmount: "$1,948.00",
+                        cardholderName: "Michael T. Rivera",
+                        merchantName: "Pinnacle Electronics"
                     }
                 ];
                 fs.writeFileSync(processesPath, JSON.stringify(cases, null, 4));
@@ -194,10 +210,14 @@ const server = http.createServer(async (req, res) => {
                 fs.writeFileSync(KB_VERSIONS_PATH, '[]');
 
                 // Launch scripts with staggered delay
+                // Reset email-status for CHB_004
+                state.sent = false;
+
                 const scripts = [
                     { file: 'CB_001_legitimate_purchase.cjs', id: 'CB_001' },
                     { file: 'CB_002_friendly_fraud.cjs', id: 'CB_002' },
-                    { file: 'CB_003_partial_refund.cjs', id: 'CB_003' }
+                    { file: 'CB_003_partial_refund.cjs', id: 'CB_003' },
+                    { file: 'CB_004_missing_evidence.cjs', id: 'CB_004' }
                 ];
 
                 let totalDelay = 0;
