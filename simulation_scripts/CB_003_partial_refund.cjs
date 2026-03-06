@@ -373,22 +373,70 @@ const waitForSignal = async (signalId) => {
             await waitForSignal(step.hitlSignal);
             await updateProcessListStatus(PROCESS_ID, "In Progress", "Analyst approved liability acceptance — posting to SAP");
 
+            // --- Post-HITL Step 8: SAP Liability Posting ---
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
                 id: "step-8",
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                title: "SAP Liability Posting + Pega Case Closure",
+                title: "UiPath — Posting liability to SAP General Ledger...",
+                status: "processing"
+            });
+            await updateProcessListStatus(PROCESS_ID, "In Progress", "UiPath posting liability to SAP...");
+            await delay(2000);
+            updateProcessLog(PROCESS_ID, {
+                id: "step-8",
+                title: "UiPath — SAP Liability Posted ($1,180.00 to GL 2380)",
+                status: "success",
+                reasoning: [
+                    "UiPath RPA bot executed SAP ledger posting:",
+                    "  Chargeback loss: $1,180.00 posted to reserve account GL 2380",
+                    "  Journal entry: JE-2026-CHB-0412 posted",
+                    "  Accounting period: March 2026",
+                    "  Arbitration avoided — saved $500.00 filing fee"
+                ]
+            });
+            await delay(1500);
+
+            // --- Post-HITL Step 9: Merchant Notification ---
+            updateProcessLog(PROCESS_ID, {
+                id: "step-9",
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                title: "UiPath — Sending merchant notification...",
+                status: "processing"
+            });
+            await updateProcessListStatus(PROCESS_ID, "In Progress", "Notifying CloudFit Athletic Gear...");
+            await delay(2000);
+            updateProcessLog(PROCESS_ID, {
+                id: "step-9",
+                title: "UiPath — CloudFit Athletic Gear Notified (No Further Action)",
+                status: "success",
+                reasoning: [
+                    "Merchant notification dispatched:",
+                    "  Recipient: CloudFit Athletic Gear (merchant ID: CFA-77203)",
+                    "  Channel: Automated email via Pega correspondence",
+                    "  Content: Dispute resolved — liability accepted, no merchant action required",
+                    "  Transaction reference: TXN-2026-01-28-CFA-1180"
+                ]
+            });
+            await delay(1500);
+
+            // --- Post-HITL Step 10: Pega Case Closure ---
+            updateProcessLog(PROCESS_ID, {
+                id: "step-10",
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                title: "Pega Smart Dispute — Closing case...",
+                status: "processing"
+            });
+            await updateProcessListStatus(PROCESS_ID, "In Progress", "Finalizing case closure...");
+            await delay(2000);
+            updateProcessLog(PROCESS_ID, {
+                id: "step-10",
+                title: "Pega Smart Dispute — Case Closed (Liability Accepted — $587 Saved)",
                 status: "completed",
                 reasoning: [
-                    "UiPath RPA bot execution:",
-                    "  SAP GL posting: $1,180.00 to chargeback loss reserve (GL 2380)",
-                    "  Journal entry: JE-2026-CHB-0412 posted",
-                    "  Merchant notification: CloudFit Athletic Gear — no further action",
-                    "",
-                    "Pega case closure:",
-                    "  Status: RESOLVED — Liability Accepted",
+                    "Case closure finalized:",
+                    "  Pega status: RESOLVED — Liability Accepted",
                     "  Reason: Negative expected value (-$87.00), weak evidence",
-                    "  Arbitration avoided — saved $500.00 filing fee",
                     "  Total resolution time: 2 hours 38 minutes",
                     "  Bank net savings vs arbitration: $587.00"
                 ]
