@@ -152,12 +152,7 @@ const waitForSignal = async (signalId) => {
                 "  Authentication type: Frictionless flow (no challenge issued)",
                 "  ECI indicator: 05 (fully authenticated)",
                 "  3DS Server: Visa Directory Server v2.2.0",
-                "  Liability shift: Active — shifts to issuer under Visa rules",
-                "",
-                "The frictionless auth means the issuer's risk engine approved this",
-                "transaction without challenging the cardholder. ECI 05 normally",
-                "provides strong liability protection, but Visa has been scrutinizing",
-                "frictionless approvals more closely in pre-arb cases"
+                "  Liability shift: Active — shifts to issuer under Visa rules"
             ],
             artifacts: [{
                 id: "3ds-auth",
