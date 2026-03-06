@@ -102,51 +102,63 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
         },
         {
             id: "step-2",
-            title_p: "Gathering evidence from FedEx API and Salesforce CRM in parallel...",
-            title_s: "Parallel Evidence Gathering — FedEx API + Salesforce CRM",
+            title_p: "Querying FedEx Ship API for tracking 7729-4481-0037...",
+            title_s: "FedEx Ship API — Delivery Confirmed with Signature",
             reasoning: [
                 "FedEx Ship API — Tracking 7729-4481-0037:",
+                "  Status: Delivered",
                 "  Delivered: February 24, 2026 at 2:17 PM EST",
                 "  Signed by: J. PATTERSON",
                 "  GPS delivery confidence: 99.2% match to billing address",
+                "  Delivery location: 1847 Elmwood Dr, Charlotte NC 28205",
                 "  Photo-on-delivery: Front porch, package visible",
                 "",
-                "Salesforce CRM — Customer 360 lookup:",
-                "  4 prior orders with NovaTech (avg $1,200)",
-                "  Zero previous disputes across all merchants",
-                "  Loyalty tier: Gold (since 2024)",
-                "  Last support ticket: None in past 12 months"
+                "Strong delivery evidence — signature matches cardholder name"
             ],
-            artifacts: [
-                {
-                    id: "fedex-tracking",
-                    type: "json",
-                    label: "FedEx Delivery Confirmation",
-                    data: {
-                        tracking: "7729-4481-0037",
-                        status: "Delivered",
-                        delivered_date: "2026-02-24 14:17 EST",
-                        signed_by: "J. PATTERSON",
-                        gps_confidence: "99.2%",
-                        photo_proof: true
-                    }
-                },
-                {
-                    id: "salesforce-crm",
-                    type: "json",
-                    label: "Salesforce Customer Profile",
-                    data: {
-                        prior_orders: 4,
-                        avg_order_value: "$1,200",
-                        dispute_history: "None",
-                        loyalty_tier: "Gold",
-                        customer_since: "2024"
-                    }
+            artifacts: [{
+                id: "fedex-tracking",
+                type: "json",
+                label: "FedEx Delivery Confirmation",
+                data: {
+                    tracking: "7729-4481-0037",
+                    status: "Delivered",
+                    delivered_date: "2026-02-24 14:17 EST",
+                    signed_by: "J. PATTERSON",
+                    gps_confidence: "99.2%",
+                    photo_proof: true
                 }
-            ]
+            }]
         },
         {
             id: "step-3",
+            title_p: "Pulling customer profile from Salesforce CRM...",
+            title_s: "Salesforce CRM — Clean Customer History (Zero Prior Disputes)",
+            reasoning: [
+                "Salesforce CRM — Customer 360 lookup for James R. Patterson:",
+                "  Customer since: 2024 (Gold loyalty tier)",
+                "  4 prior orders with NovaTech Electronics (avg $1,200)",
+                "  All previous orders delivered successfully, no complaints",
+                "  Zero previous disputes across all merchants and cards",
+                "  Last support ticket: None in past 12 months",
+                "  Lifetime customer value: $7,647.00",
+                "",
+                "Clean customer profile supports legitimate purchase hypothesis"
+            ],
+            artifacts: [{
+                id: "salesforce-crm",
+                type: "json",
+                label: "Salesforce Customer Profile",
+                data: {
+                    prior_orders: 4,
+                    avg_order_value: "$1,200",
+                    dispute_history: "None",
+                    loyalty_tier: "Gold",
+                    customer_since: "2024"
+                }
+            }]
+        },
+        {
+            id: "step-4",
             title_p: "Running Visa CE 3.0 Compelling Evidence check...",
             title_s: "Visa CE 3.0 Compelling Evidence — Rule 13.1.4 Satisfied",
             reasoning: [
@@ -174,7 +186,7 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
             }]
         },
         {
-            id: "step-4",
+            id: "step-5",
             title_p: "Computing fraud likelihood score with Gemini...",
             title_s: "Fraud Likelihood Scoring — Score: 8/100 (Low Risk)",
             reasoning: [
@@ -203,7 +215,7 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
             }]
         },
         {
-            id: "step-5",
+            id: "step-6",
             title_p: "Generating representment rebuttal letter...",
             title_s: "Rebuttal Letter Generated — RC 13.1 Representment Package",
             reasoning: [
@@ -224,7 +236,7 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
             }]
         },
         {
-            id: "step-6",
+            id: "step-7",
             title_p: "Filing representment via VROL portal...",
             title_s: "VROL Filing — Representment Submitted Successfully",
             reasoning: [
@@ -251,7 +263,7 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
             }]
         },
         {
-            id: "step-7",
+            id: "step-8",
             title_p: "UiPath — Posting to SAP General Ledger and closing case...",
             title_s: "UiPath — Ledger Update + Merchant Notification + Case Closed",
             reasoning: [
