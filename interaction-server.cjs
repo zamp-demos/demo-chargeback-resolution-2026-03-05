@@ -24,7 +24,7 @@ if (!fs.existsSync(SNAPSHOTS_DIR)) fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true
 // Initialize processes.json from base_processes.json if not exists
 const baseProcessesPath = path.join(DATA_DIR, 'base_processes.json');
 const processesPath = path.join(DATA_DIR, 'processes.json');
-if (fs.existsSync(baseProcessesPath) && !fs.existsSync(processesPath)) {
+if (fs.existsSync(baseProcessesPath)) {
     fs.copyFileSync(baseProcessesPath, processesPath);
     console.log('Initialized processes.json from base_processes.json');
 }
@@ -142,52 +142,12 @@ const server = http.createServer(async (req, res) => {
         // Kill straggler simulation processes
         exec('pkill -9 -f "node(.*)simulation_scripts" || true', (err) => {
             setTimeout(() => {
-                // Initialize cases
-                const cases = [
-                    {
-                        id: "CB_001",
-                        name: "CB_001 - Legitimate Purchase Confirmed",
-                        category: "Chargeback Disputes",
-                        stockId: "TXN-892471",
-                        year: new Date().toISOString().split('T')[0],
-                        status: "In Progress",
-                        currentStatus: "Initializing...",
-                        transactionId: "TXN-892471",
-                        cardLast4: "4532",
-                        amount: "$89.99",
-                        merchant: "TechStore Inc.",
-                        disputeReason: "Did not authorize"
-                    },
-                    {
-                        id: "CB_002",
-                        name: "CB_002 - Friendly Fraud Detected",
-                        category: "Chargeback Disputes",
-                        stockId: "TXN-551203",
-                        year: new Date().toISOString().split('T')[0],
-                        status: "In Progress",
-                        currentStatus: "Initializing...",
-                        transactionId: "TXN-551203",
-                        cardLast4: "7891",
-                        amount: "$249.99",
-                        merchant: "StreamFlix Premium",
-                        disputeReason: "Subscription not authorized"
-                    },
-                    {
-                        id: "CB_003",
-                        name: "CB_003 - Partial Refund Negotiation",
-                        category: "Chargeback Disputes",
-                        stockId: "TXN-663812",
-                        year: new Date().toISOString().split('T')[0],
-                        status: "In Progress",
-                        currentStatus: "Initializing...",
-                        transactionId: "TXN-663812",
-                        cardLast4: "2209",
-                        amount: "$1,499.00",
-                        merchant: "LuxeFurniture Co.",
-                        disputeReason: "Product damaged on arrival"
-                    }
-                ];
-                fs.writeFileSync(processesPath, JSON.stringify(cases, null, 4));
+                // Initialize cases from base_processes.json
+                if (fs.existsSync(baseProcessesPath)) {
+                    fs.copyFileSync(baseProcessesPath, processesPath);
+                    console.log('Reset: Restored processes.json from base_processes.json');
+                }
+                const cases = JSON.parse(fs.readFileSync(processesPath, 'utf8'));
 
                 // Reset feedback queue and KB versions
                 fs.writeFileSync(FEEDBACK_QUEUE_PATH, '[]');
