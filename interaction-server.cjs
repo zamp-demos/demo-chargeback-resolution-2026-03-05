@@ -24,7 +24,7 @@ if (!fs.existsSync(SNAPSHOTS_DIR)) fs.mkdirSync(SNAPSHOTS_DIR, { recursive: true
 // Initialize processes.json from base_processes.json if not exists
 const baseProcessesPath = path.join(DATA_DIR, 'base_processes.json');
 const processesPath = path.join(DATA_DIR, 'processes.json');
-if (fs.existsSync(baseProcessesPath) && !fs.existsSync(processesPath)) {
+if (fs.existsSync(baseProcessesPath)) {
     fs.copyFileSync(baseProcessesPath, processesPath);
     console.log('Initialized processes.json from base_processes.json');
 }
@@ -145,46 +145,46 @@ const server = http.createServer(async (req, res) => {
                 // Initialize cases
                 const cases = [
                     {
-                        id: "CB_001",
-                        name: "CB_001 - Legitimate Purchase Confirmed",
-                        category: "Chargeback Disputes",
-                        stockId: "TXN-892471",
+                        id: "CHB_001",
+                        category: "Chargeback Resolution",
+                        name: "NovaTech Electronics \u2014 Merchandise Not Received",
+                        stockId: "CHB-2026-0147",
                         year: new Date().toISOString().split('T')[0],
                         status: "In Progress",
                         currentStatus: "Initializing...",
-                        transactionId: "TXN-892471",
-                        cardLast4: "4532",
-                        amount: "$89.99",
-                        merchant: "TechStore Inc.",
-                        disputeReason: "Did not authorize"
+                        caseId: "CHB-2026-0147",
+                        reasonCode: "Visa 13.1",
+                        disputeAmount: "$2,847.00",
+                        cardholderName: "James R. Patterson",
+                        merchantName: "NovaTech Electronics"
                     },
                     {
-                        id: "CB_002",
-                        name: "CB_002 - Friendly Fraud Detected",
-                        category: "Chargeback Disputes",
-                        stockId: "TXN-551203",
+                        id: "CHB_002",
+                        category: "Chargeback Resolution",
+                        name: "Artisan Home Furnishings \u2014 Friendly Fraud Detection",
+                        stockId: "CHB-2026-0289",
                         year: new Date().toISOString().split('T')[0],
                         status: "In Progress",
                         currentStatus: "Initializing...",
-                        transactionId: "TXN-551203",
-                        cardLast4: "7891",
-                        amount: "$249.99",
-                        merchant: "StreamFlix Premium",
-                        disputeReason: "Subscription not authorized"
+                        caseId: "CHB-2026-0289",
+                        reasonCode: "Visa 13.3",
+                        disputeAmount: "$6,420.00",
+                        cardholderName: "Sarah M. Chen",
+                        merchantName: "Artisan Home Furnishings"
                     },
                     {
-                        id: "CB_003",
-                        name: "CB_003 - Partial Refund Negotiation",
-                        category: "Chargeback Disputes",
-                        stockId: "TXN-663812",
+                        id: "CHB_003",
+                        category: "Chargeback Resolution",
+                        name: "CloudFit Athletic Gear \u2014 Pre-Arb Cost-Benefit Reversal",
+                        stockId: "CHB-2026-0412",
                         year: new Date().toISOString().split('T')[0],
                         status: "In Progress",
                         currentStatus: "Initializing...",
-                        transactionId: "TXN-663812",
-                        cardLast4: "2209",
-                        amount: "$1,499.00",
-                        merchant: "LuxeFurniture Co.",
-                        disputeReason: "Product damaged on arrival"
+                        caseId: "CHB-2026-0412",
+                        reasonCode: "Visa 10.4",
+                        disputeAmount: "$1,180.00",
+                        cardholderName: "David L. Morrison",
+                        merchantName: "CloudFit Athletic Gear"
                     }
                 ];
                 fs.writeFileSync(processesPath, JSON.stringify(cases, null, 4));
