@@ -202,12 +202,7 @@ const waitForSignal = async (signalId) => {
                 "  Evidence submitted: 3DS authentication logs, merchant records",
                 "  Visa ruling: REJECTED",
                 "  Rejection reason: CE 3.0 Rule 10.4.3 not satisfied",
-                "  Visa noted IP/device mismatch undermined 3DS evidence",
-                "",
-                "Case now in pre-arbitration phase:",
-                "  Meridian Bank must decide: escalate to arbitration or accept liability",
-                "  Arbitration filing fee: $500.00",
-                "  Decision deadline: 10 calendar days"
+                "  Visa noted IP/device mismatch undermined 3DS evidence"
             ],
             artifacts: [{
                 id: "vrol-status",
