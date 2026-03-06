@@ -199,7 +199,28 @@ const waitForEmailSent = async () => {
                 "    Spa: $100.00 (Feb 11)",
                 "    Total: $4,200.00",
                 "",
-                "23 discrete facts extracted across all 4 documents in 4.2 seconds"
+                "Cross-document findings (facts that require multiple sources):",
+                "  ⚠ Finding 1 — Docs 2 + 3: Revised booking is non-refundable",
+                "    Email thread proves this was a MODIFICATION (not a cancellation)",
+                "    Policy Section 4.2(b) states modifications create a non-refundable booking",
+                "    → Cardholder forfeited cancellation rights when she changed dates on Feb 3",
+                "",
+                "  ⚠ Finding 2 — Docs 2 + 1 + 4: Guest stayed Feb 10–13 (confirmed by 3 sources)",
+                "    Email: new dates requested as Feb 10–13",
+                "    Check-in scan: physical arrival confirmed Feb 10 at 14:32",
+                "    Folio: minibar + room service charges on Feb 10, 11, 12 prove continuous occupancy",
+                "",
+                "  ⚠ Finding 3 — Docs 2 + 4: Charge of $4,200 matches the modified booking",
+                "    Email: 3 nights (Feb 10–13) at Executive Suite",
+                "    Folio: $1,200/night × 3 = $3,600 + $600 incidentals = $4,200.00",
+                "    No unexplained charges — math is internally consistent",
+                "",
+                "  ⚠ Finding 4 — Docs 1 + 2: Guest identity is the cardholder",
+                "    Check-in scan: signature + driver license *8834 for Katherine E. Whitfield",
+                "    Email thread: sent from katherine.whitfield@bellvue-partners.com",
+                "    Physical ID + digital identity match — no third-party dispute possible",
+                "",
+                "23 facts extracted + 4 cross-document findings in 4.2 seconds"
             ],
             artifacts: [
                 {
@@ -233,6 +254,7 @@ const waitForEmailSent = async () => {
                     data: {
                         totalDocumentsProcessed: 4,
                         totalFactsExtracted: 23,
+                        crossDocumentFindings: 4,
                         processingTime: "4.2 seconds",
                         document1_checkinScan: {
                             type: "Image (scanned registration card)",
@@ -269,7 +291,29 @@ const waitForEmailSent = async () => {
                             roomService: "$312.50 (Feb 11 dinner, Feb 12 breakfast)",
                             spaServices: "$100.00 (Feb 11)",
                             occupancyEvidence: "Room service + minibar + spa across 3 days confirms physical presence"
-                        }
+                        },
+                        crossDocumentFindings: [
+                            {
+                                finding: "Revised booking is non-refundable",
+                                sources: ["Document 2 — Email Thread", "Document 3 — Cancellation Policy"],
+                                synthesis: "Email proves MODIFICATION (not cancellation) + Policy Section 4.2(b) makes modifications non-refundable → cardholder forfeited cancellation rights on Feb 3"
+                            },
+                            {
+                                finding: "Guest stayed Feb 10–13 (triple-confirmed)",
+                                sources: ["Document 2 — Email Thread", "Document 1 — Check-In Scan", "Document 4 — Hotel Folio"],
+                                synthesis: "Email: dates requested → Check-in: physical arrival Feb 10 → Folio: charges on Feb 10, 11, 12 prove continuous occupancy"
+                            },
+                            {
+                                finding: "Charge of $4,200 matches modified booking",
+                                sources: ["Document 2 — Email Thread", "Document 4 — Hotel Folio"],
+                                synthesis: "Email: 3 nights at Executive Suite → Folio: $1,200/night × 3 + $600 incidentals = $4,200 — internally consistent"
+                            },
+                            {
+                                finding: "Guest identity is the cardholder",
+                                sources: ["Document 1 — Check-In Scan", "Document 2 — Email Thread"],
+                                synthesis: "Physical ID (license *8834) + digital identity (katherine.whitfield@bellvue-partners.com) match — no third-party dispute possible"
+                            }
+                        ]
                     }
                 }
             ]
