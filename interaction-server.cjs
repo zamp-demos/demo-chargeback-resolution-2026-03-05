@@ -248,11 +248,12 @@ const server = http.createServer(async (req, res) => {
     if (cleanPath === '/signal' && req.method === 'POST') {
         const body = await readBody(req);
         const parsed = JSON.parse(body);
-        if (parsed.name) {
-            state.signals[parsed.name] = true;
+        const sigName = parsed.signal || parsed.name;
+        if (sigName) {
+            state.signals[sigName] = true;
             if (fs.existsSync(signalFilePath)) {
                 const signals = JSON.parse(fs.readFileSync(signalFilePath, 'utf8'));
-                signals[parsed.name] = true;
+                signals[sigName] = true;
                 fs.writeFileSync(signalFilePath, JSON.stringify(signals, null, 4));
             }
         }
