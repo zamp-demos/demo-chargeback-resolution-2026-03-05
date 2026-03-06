@@ -115,30 +115,23 @@ const waitForSignal = async (signalId) => {
     const steps = [
         {
             id: "step-1",
-            title_p: "Pega Smart Dispute — Triaging case CHB-2026-0412...",
-            title_s: "Pega Smart Dispute — Case Triaged, Routed to Pace (Pre-Arbitration)",
+            title_p: "Pega Smart Dispute — Ingesting case CHB-2026-0412...",
+            title_s: "Pega Smart Dispute — Case Intake Received",
             reasoning: [
-                "Visa VROL webhook received — chargeback escalation to pre-arbitration",
-                "Pega case CHB-2026-0412 created — running intake decisioning rules:",
-                "  Validated cardholder: David L. Morrison (card ending 6709)",
-                "  Merchant: CloudFit Athletic Gear (MCC 5941 — Sporting Goods)",
-                "  Transaction date: January 30, 2026 — dispute amount: $1,180.00",
-                "  Reason Code: Visa 10.4 — Other Fraud (Card-Absent Environment)",
-                "  Core banking pull: Original authorization confirmed via 3DS frictionless flow",
-                "Pega detected this is a pre-arbitration escalation:",
-                "  Prior representment filed February 15 — rejected by Visa",
-                "  Rejection reason: CE 3.0 Rule 10.4.3 not satisfied",
-                "  Case now in pre-arb phase — 10-day decision deadline",
-                "  Arbitration filing fee: $500.00 (non-refundable if lost)",
-                "Pega routing decision — handing to Pace intelligence layer:",
-                "  Pre-arbitration involves financial risk assessment ($500 fee at stake)",
-                "  Requires cost-benefit analysis and evidence re-evaluation beyond rule engine",
-                "  Pace to analyze evidence strength, model economics, and recommend action"
+                "Webhook received from Visa VROL — chargeback escalation",
+                "Case ID: CHB-2026-0412",
+                "Reason Code: Visa 10.4 — Other Fraud (Card-Absent Environment)",
+                "Dispute amount: $1,180.00",
+                "Cardholder: David L. Morrison (card ending 6709)",
+                "Merchant: CloudFit Athletic Gear (MCC 5941 — Sporting Goods)",
+                "Transaction date: January 30, 2026",
+                "Stage: Pre-arbitration (representment previously rejected)",
+                "Pega case created — routing to Pace intelligence layer"
             ],
             artifacts: [{
                 id: "case-intake",
                 type: "json",
-                label: "Pega Case Handoff",
+                label: "Pega Case Details",
                 data: {
                     case_id: "CHB-2026-0412",
                     reason_code: "Visa 10.4",
@@ -146,71 +139,46 @@ const waitForSignal = async (signalId) => {
                     cardholder: "David L. Morrison",
                     merchant: "CloudFit Athletic Gear",
                     mcc: "5941",
-                    stage: "Pre-arbitration",
-                    pega_triage: "Prior representment rejected, pre-arb escalation detected",
-                    handoff_reason: "Financial risk decision — cost-benefit analysis required",
-                    prior_representment: "Filed Feb 15, rejected (CE 3.0 Rule 10.4.3 not met)",
-                    arbitration_fee: "$500.00"
+                    stage: "Pre-arbitration"
                 }
             }]
         },
         {
             id: "step-2",
-            title_p: "Pulling 3D Secure authentication logs...",
-            title_s: "3DS Authentication — Frictionless Flow, Liability Shift to Issuer",
+            title_p: "Pulling 3DS authentication logs and device fingerprint data...",
+            title_s: "Evidence Gathering — 3DS Authentication + Device Fingerprint",
             reasoning: [
-                "3D Secure 2.0 authentication analysis for transaction Jan 30:",
+                "3D Secure 2.0 authentication analysis:",
                 "  Authentication type: Frictionless flow (no challenge issued)",
                 "  ECI indicator: 05 (fully authenticated, liability shift to issuer)",
                 "  3DS Server: Visa Directory Server v2.2.0",
-                "  Cardholder enrolled in Visa Secure since October 2024",
-                "  Authentication completed in 1.2 seconds — risk engine auto-approved",
-                "3DS liability shift favors merchant — but this was already argued in first representment"
-            ],
-            artifacts: [{
-                id: "3ds-logs",
-                type: "json",
-                label: "3DS Authentication Logs",
-                data: {
-                    auth_type: "Frictionless 3DS 2.0",
-                    eci: "05",
-                    liability_shift: "Issuer",
-                    enrolled_since: "October 2024",
-                    auth_time: "1.2s"
-                }
-            }]
-        },
-        {
-            id: "step-3",
-            title_p: "Analyzing device fingerprint and IP geolocation data...",
-            title_s: "Device Fingerprint — IP Mismatch, Unknown Device Detected",
-            reasoning: [
-                "Device fingerprint analysis for transaction Jan 30:",
+                "",
+                "Device fingerprint analysis:",
                 "  Transaction IP: 172.58.91.204 (Phoenix, AZ)",
                 "  Cardholder registered address: Denver, CO",
                 "  IP geolocation mismatch: 600+ miles from billing address",
                 "  Device: Chrome 121 / Windows 11 — not in cardholder device history",
                 "  Browser language: en-US (consistent)",
-                "  No VPN or proxy detected — appears to be a legitimate mobile carrier IP",
-                "Mixed signals: 3DS authenticated but device and IP don’t match cardholder profile"
+                "",
+                "Mixed signals: 3DS authenticated but device/IP anomalies present"
             ],
             artifacts: [{
-                id: "device-fingerprint",
+                id: "3ds-analysis",
                 type: "json",
-                label: "Device Fingerprint Report",
+                label: "3DS + Device Analysis",
                 data: {
-                    ip_address: "172.58.91.204",
+                    auth_type: "Frictionless 3DS 2.0",
+                    eci: "05",
+                    liability_shift: "Issuer",
                     ip_location: "Phoenix, AZ",
                     billing_location: "Denver, CO",
-                    distance: "600+ miles",
-                    device: "Chrome 121 / Windows 11",
-                    device_known: false,
-                    vpn_detected: false
+                    ip_mismatch: true,
+                    device_known: false
                 }
             }]
         },
         {
-            id: "step-4",
+            id: "step-3",
             title_p: "Checking VROL for prior representment outcome...",
             title_s: "VROL Status Check — Representment Previously Rejected",
             reasoning: [
@@ -220,6 +188,7 @@ const waitForSignal = async (signalId) => {
                 "  Visa ruling: REJECTED",
                 "  Rejection reason: CE 3.0 Rule 10.4.3 not satisfied",
                 "  Visa noted IP/device mismatch undermined 3DS evidence",
+                "",
                 "Case now in pre-arbitration phase:",
                 "  Meridian Bank must decide: escalate to arbitration or accept liability",
                 "  Arbitration filing fee: $500.00",
@@ -233,7 +202,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-5",
+            id: "step-4",
             title_p: "Running pre-arbitration cost-benefit analysis...",
             title_s: "Pre-Arbitration Cost-Benefit Analysis — Negative Expected Value",
             reasoning: [
@@ -241,11 +210,13 @@ const waitForSignal = async (signalId) => {
                 "  Dispute amount: $1,180.00",
                 "  Arbitration filing fee: $500.00 (non-refundable if lost)",
                 "  Win probability: 35% (weak evidence after CE 3.0 rejection)",
+                "",
                 "Expected value calculation:",
                 "  If win (35%):  +$1,180.00 recovered",
                 "  If lose (65%): -$500.00 filing fee (amount already lost)",
                 "  Expected value: (0.35 × $1,180) - (0.65 × $500) = $413 - $325 = +$88",
                 "  Minus internal processing cost (~$175): Net EV = -$87.00",
+                "",
                 "Recommendation: ACCEPT LIABILITY — negative expected value",
                 "Arbitration is not economically justified for this case"
             ],
@@ -265,7 +236,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-6",
+            id: "step-5",
             title_p: "Computing fraud likelihood score with Gemini...",
             title_s: "Fraud Likelihood Scoring — Score: 42/100 (Moderate / Inconclusive)",
             reasoning: [
@@ -276,6 +247,7 @@ const waitForSignal = async (signalId) => {
                 "  Prior representment rejected by Visa: +12 points",
                 "  No prior disputes on this card: -8 points",
                 "  Merchant has low dispute ratio (0.3%): -5 points",
+                "",
                 "Final Score: 42/100 (Moderate — Inconclusive)",
                 "Evidence Strength: 31/100 (Weak after CE 3.0 rejection)",
                 "Recommendation: ACCEPT LIABILITY — evidence insufficient for arbitration"
@@ -294,22 +266,27 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-7",
+            id: "step-6",
             title_p: "Awaiting analyst review of cost-benefit recommendation...",
             title_s: "Analyst Review — Accept Liability Recommendation ($-87 EV)",
             reasoning: [
                 "HUMAN-IN-THE-LOOP checkpoint reached",
+                "",
                 "Pace recommends accepting liability based on cost-benefit analysis:",
+                "",
                 "  Dispute amount: $1,180.00",
                 "  Arbitration filing fee: $500.00",
                 "  Win probability: 35%",
                 "  Net expected value: -$87.00",
+                "",
                 "If analyst approves:",
                 "  Liability will be accepted, no arbitration filed",
                 "  $1,180.00 written off to chargeback loss reserve",
                 "  Case closed as RESOLVED — Liability Accepted",
+                "",
                 "If analyst overrides:",
                 "  Case will proceed to Visa arbitration ($500 fee)",
+                "",
                 "Awaiting analyst decision..."
             ],
             isHitl: true,
@@ -345,7 +322,8 @@ const waitForSignal = async (signalId) => {
 
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
-                id: "step-8"                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                id: "step-7",
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 title: "SAP Liability Posting + Pega Case Closure",
                 status: "completed",
                 reasoning: [
@@ -353,6 +331,7 @@ const waitForSignal = async (signalId) => {
                     "  SAP GL posting: $1,180.00 to chargeback loss reserve (GL 2380)",
                     "  Journal entry: JE-2026-CHB-0412 posted",
                     "  Merchant notification: CloudFit Athletic Gear — no further action",
+                    "",
                     "Pega case closure:",
                     "  Status: RESOLVED — Liability Accepted",
                     "  Reason: Negative expected value (-$87.00), weak evidence",
