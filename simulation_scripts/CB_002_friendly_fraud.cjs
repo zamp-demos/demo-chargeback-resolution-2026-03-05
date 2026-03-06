@@ -154,52 +154,65 @@ const waitForSignal = async (signalId) => {
         },
         {
             id: "step-2",
-            title_p: "Querying Salesforce CRM and merchant delivery records...",
-            title_s: "Parallel Evidence Gathering — Salesforce + Merchant Records",
+            title_p: "Pulling cardholder dispute history from Salesforce CRM...",
+            title_s: "Salesforce CRM — Prior Dispute Flagged (Luxe Bedding Co)",
             reasoning: [
                 "Salesforce CRM — Customer history for Sarah M. Chen:",
                 "  Prior dispute: January 28, 2026 — Luxe Bedding Co, $3,180.00",
-                "  That dispute also RC 13.3 (Not as Described)",
+                "  That dispute also filed under RC 13.3 (Not as Described)",
                 "  Prior dispute outcome: Refund granted (merchant did not contest)",
-                "Merchant records — Artisan Home Furnishings:",
-                "  Order #AHF-90421 — 6-piece walnut dining set",
-                "  FedEx Freight delivery: February 14, signed 'S. Chen'",
-                "  Customer email February 18: 'Absolutely love the craftsmanship'",
-                "  No damage claim filed with merchant before chargeback",
-                "  No return request initiated"
+                "  Combined dispute exposure in 25 days: $9,600.00",
+                "  No other dispute history prior to January 2026",
+                "  Customer account created: August 2023",
+                "Repeat RC 13.3 disputes against furniture merchants — pattern emerging"
             ],
-            artifacts: [
-                {
-                    id: "salesforce-history",
-                    type: "json",
-                    label: "Salesforce Dispute History",
-                    data: {
-                        prior_disputes: 1,
-                        prior_dispute_merchant: "Luxe Bedding Co",
-                        prior_dispute_amount: "$3,180.00",
-                        prior_dispute_rc: "13.3",
-                        prior_dispute_date: "2026-01-28",
-                        prior_outcome: "Refund granted"
-                    }
-                },
-                {
-                    id: "merchant-records",
-                    type: "json",
-                    label: "Merchant Order Records",
-                    data: {
-                        order_id: "AHF-90421",
-                        item: "6-piece walnut dining set",
-                        delivered: "2026-02-14",
-                        signed_by: "S. Chen",
-                        positive_email: "2026-02-18",
-                        return_requested: false,
-                        damage_claim: false
-                    }
+            artifacts: [{
+                id: "salesforce-history",
+                type: "json",
+                label: "Salesforce Dispute History",
+                data: {
+                    prior_disputes: 1,
+                    prior_dispute_merchant: "Luxe Bedding Co",
+                    prior_dispute_amount: "$3,180.00",
+                    prior_dispute_rc: "13.3",
+                    prior_dispute_date: "2026-01-28",
+                    prior_outcome: "Refund granted",
+                    combined_exposure: "$9,600.00"
                 }
-            ]
+            }]
         },
         {
             id: "step-3",
+            title_p: "Retrieving merchant order and delivery records from Artisan Home Furnishings...",
+            title_s: "Merchant Records — Delivery Confirmed, Positive Email, No Damage Claim",
+            reasoning: [
+                "Merchant records — Artisan Home Furnishings:",
+                "  Order #AHF-90421 — 6-piece walnut dining set ($6,420.00)",
+                "  FedEx Freight delivery: February 14, signed 'S. Chen'",
+                "  Customer email to merchant February 18: 'Absolutely love the craftsmanship'",
+                "  No damage claim filed with merchant before chargeback",
+                "  No return request initiated",
+                "  Merchant's return window: 30 days (still open at time of dispute)",
+                "Cardholder praised product 4 days after delivery, then filed chargeback claiming damage"
+            ],
+            artifacts: [{
+                id: "merchant-records",
+                type: "json",
+                label: "Merchant Order Records",
+                data: {
+                    order_id: "AHF-90421",
+                    item: "6-piece walnut dining set",
+                    delivered: "2026-02-14",
+                    signed_by: "S. Chen",
+                    positive_email: "2026-02-18",
+                    return_requested: false,
+                    damage_claim: false,
+                    return_window_open: true
+                }
+            }]
+        },
+        {
+            id: "step-4",
             title_p: "Running social media intelligence scan...",
             title_s: "Social Media Intelligence — Instagram Evidence Found",
             reasoning: [
@@ -228,7 +241,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-4",
+            id: "step-5",
             title_p: "Analyzing dual-dispute pattern across card network...",
             title_s: "Dual-Dispute Pattern Analysis — Serial Fraud Indicators",
             reasoning: [
@@ -260,7 +273,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-5",
+            id: "step-6",
             title_p: "Computing fraud likelihood score with Gemini...",
             title_s: "Fraud Likelihood Scoring — Score: 89/100 (Confirmed Friendly Fraud)",
             reasoning: [
@@ -289,7 +302,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-6",
+            id: "step-7",
             title_p: "Generating fraud narrative rebuttal letter...",
             title_s: "Rebuttal Letter Generated — Fraud Narrative with Social Media Evidence",
             reasoning: [
@@ -311,7 +324,7 @@ const waitForSignal = async (signalId) => {
             }]
         },
         {
-            id: "step-7",
+            id: "step-8",
             title_p: "Awaiting analyst approval for fraud escalation...",
             title_s: "Analyst Review Required — Approve Fraud Evidence Package",
             reasoning: [
@@ -357,8 +370,7 @@ const waitForSignal = async (signalId) => {
 
             await delay(2000);
             updateProcessLog(PROCESS_ID, {
-                id: "step-8",
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                id: "step-9"                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                 title: "VROL Filing + Fraud Team Alert + UiPath Notifications",
                 status: "completed",
                 reasoning: [
