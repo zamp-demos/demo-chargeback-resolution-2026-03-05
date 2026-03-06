@@ -73,26 +73,22 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
     const steps = [
         {
             id: "step-1",
-            title_p: "Pega Smart Dispute — Triaging case CHB-2026-0147...",
-            title_s: "Pega Smart Dispute — Case Triaged, Routed to Pace",
+            title_p: "Pega Smart Dispute — Ingesting case CHB-2026-0147...",
+            title_s: "Pega Smart Dispute — Case Intake Received",
             reasoning: [
-                "Visa VROL webhook received — new chargeback filed under RC 13.1",
-                "Pega case CHB-2026-0147 created — running intake decisioning rules:",
-                "  Validated cardholder: James R. Patterson (card ending 8421)",
-                "  Merchant: NovaTech Electronics (MCC 5732 — Electronics Stores)",
-                "  Transaction date: February 18, 2026 — dispute amount: $2,847.00",
-                "  Core banking pull: Original authorization confirmed, no reversal on file",
-                "  SLA assignment: 15-day Visa representment window, deadline March 12",
-                "  Auto-rule check: No duplicate case, no prior dispute on this transaction",
-                "Pega routing decision — handing to Pace intelligence layer:",
-                "  RC 13.1 requires delivery proof evaluation and CE 3.0 evidence assembly",
-                "  These are judgment-intensive tasks outside Pega’s decisioning rules",
-                "  Pace to gather evidence, score fraud risk, and build representment package"
+                "Webhook received from Visa VROL — new chargeback filed",
+                "Case ID: CHB-2026-0147",
+                "Reason Code: Visa 13.1 — Merchandise / Services Not Received",
+                "Dispute amount: $2,847.00",
+                "Cardholder: James R. Patterson (card ending 8421)",
+                "Merchant: NovaTech Electronics (MCC 5732 — Electronics Stores)",
+                "Transaction date: February 18, 2026",
+                "Pega case created — routing to Pace intelligence layer"
             ],
             artifacts: [{
                 id: "case-intake",
                 type: "json",
-                label: "Pega Case Handoff",
+                label: "Pega Case Details",
                 data: {
                     case_id: "CHB-2026-0147",
                     reason_code: "Visa 13.1",
@@ -100,71 +96,57 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
                     cardholder: "James R. Patterson",
                     merchant: "NovaTech Electronics",
                     mcc: "5732",
-                    transaction_date: "2026-02-18",
-                    pega_triage: "Intake validated, SLA set, no duplicates",
-                    handoff_reason: "RC 13.1 requires evidence evaluation beyond rule engine"
+                    transaction_date: "2026-02-18"
                 }
             }]
         },
         {
             id: "step-2",
-            title_p: "Querying FedEx Ship API for delivery confirmation...",
-            title_s: "FedEx API — Delivery Confirmed with Signature",
+            title_p: "Gathering evidence from FedEx API and Salesforce CRM in parallel...",
+            title_s: "Parallel Evidence Gathering — FedEx API + Salesforce CRM",
             reasoning: [
                 "FedEx Ship API — Tracking 7729-4481-0037:",
-                "  Shipped: February 20, 2026 from NovaTech warehouse (Dallas, TX)",
                 "  Delivered: February 24, 2026 at 2:17 PM EST",
                 "  Signed by: J. PATTERSON",
                 "  GPS delivery confidence: 99.2% match to billing address",
                 "  Photo-on-delivery: Front porch, package visible",
-                "  Delivery address: 1847 Elmwood Dr, Charlotte NC 28205",
-                "Strong delivery evidence — signature + GPS + photo all consistent"
-            ],
-            artifacts: [{
-                id: "fedex-tracking",
-                type: "json",
-                label: "FedEx Delivery Confirmation",
-                data: {
-                    tracking: "7729-4481-0037",
-                    status: "Delivered",
-                    delivered_date: "2026-02-24 14:17 EST",
-                    signed_by: "J. PATTERSON",
-                    gps_confidence: "99.2%",
-                    photo_proof: true,
-                    delivery_address: "1847 Elmwood Dr, Charlotte NC 28205"
-                }
-            }]
-        },
-        {
-            id: "step-3"            title_p: "Pulling cardholder history from Salesforce CRM...",
-            title_s: "Salesforce CRM — Clean History, Gold Loyalty Tier",
-            reasoning: [
-                "Salesforce CRM — Customer 360 lookup for James R. Patterson:",
+                "",
+                "Salesforce CRM — Customer 360 lookup:",
                 "  4 prior orders with NovaTech (avg $1,200)",
-                "  All 4 orders shipped to same address: 1847 Elmwood Dr",
-                "  Same card ending 8421 used for all transactions",
                 "  Zero previous disputes across all merchants",
                 "  Loyalty tier: Gold (since 2024)",
-                "  Last support ticket: None in past 12 months",
-                "Clean customer profile — no fraud indicators in history"
+                "  Last support ticket: None in past 12 months"
             ],
-            artifacts: [{
-                id: "salesforce-crm",
-                type: "json",
-                label: "Salesforce Customer Profile",
-                data: {
-                    prior_orders: 4,
-                    avg_order_value: "$1,200",
-                    same_address: true,
-                    same_card: true,
-                    dispute_history: "None",
-                    loyalty_tier: "Gold",
-                    customer_since: "2024"
+            artifacts: [
+                {
+                    id: "fedex-tracking",
+                    type: "json",
+                    label: "FedEx Delivery Confirmation",
+                    data: {
+                        tracking: "7729-4481-0037",
+                        status: "Delivered",
+                        delivered_date: "2026-02-24 14:17 EST",
+                        signed_by: "J. PATTERSON",
+                        gps_confidence: "99.2%",
+                        photo_proof: true
+                    }
+                },
+                {
+                    id: "salesforce-crm",
+                    type: "json",
+                    label: "Salesforce Customer Profile",
+                    data: {
+                        prior_orders: 4,
+                        avg_order_value: "$1,200",
+                        dispute_history: "None",
+                        loyalty_tier: "Gold",
+                        customer_since: "2024"
+                    }
                 }
-            }]
+            ]
         },
         {
-            id: "step-4",
+            id: "step-3",
             title_p: "Running Visa CE 3.0 Compelling Evidence check...",
             title_s: "Visa CE 3.0 Compelling Evidence — Rule 13.1.4 Satisfied",
             reasoning: [
@@ -192,7 +174,7 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
             }]
         },
         {
-            id: "step-5",
+            id: "step-4",
             title_p: "Computing fraud likelihood score with Gemini...",
             title_s: "Fraud Likelihood Scoring — Score: 8/100 (Low Risk)",
             reasoning: [
@@ -202,6 +184,7 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
                 "  4 prior clean orders with merchant: -20 points",
                 "  Zero dispute history across all cards: -15 points",
                 "  CE 3.0 Rule 13.1.4 satisfied: -12 points",
+                "",
                 "Final Score: 8/100 (Low Risk)",
                 "Evidence Strength: 92/100 (Excellent)",
                 "Recommendation: REPRESENT — high confidence win"
@@ -220,7 +203,7 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
             }]
         },
         {
-            id: "step-6",
+            id: "step-5",
             title_p: "Generating representment rebuttal letter...",
             title_s: "Rebuttal Letter Generated — RC 13.1 Representment Package",
             reasoning: [
@@ -241,7 +224,7 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
             }]
         },
         {
-            id: "step-7",
+            id: "step-6",
             title_p: "Filing representment via VROL portal...",
             title_s: "VROL Filing — Representment Submitted Successfully",
             reasoning: [
@@ -268,7 +251,7 @@ const updateProcessListStatus = async (processId, status, currentStatus) => {
             }]
         },
         {
-            id: "step-8",
+            id: "step-7",
             title_p: "UiPath — Posting to SAP General Ledger and closing case...",
             title_s: "UiPath — Ledger Update + Merchant Notification + Case Closed",
             reasoning: [
